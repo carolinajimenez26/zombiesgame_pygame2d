@@ -44,9 +44,9 @@ def main():
     fondo=load_image('fondo.jpg',curdir, alpha=False)
 
     #Muestra las imagenes en primera instancia
-    posinip=[10,10]
+    posinip=[80,80]
     posinif=[0,0]
-    pantalla.blit(fondo,posinip)
+    pantalla.blit(fondo,posinif)
     pantalla.blit(personaje,posinip)
 
     #Obtengo x,y del objeto
