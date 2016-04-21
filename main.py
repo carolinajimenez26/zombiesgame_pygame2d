@@ -209,30 +209,27 @@ class Magician(Player): #Hereda de la clase Player
         Player.__init__(self, img_name, pos)
 
 class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
-	def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
-		pygame.sprite.Sprite.__init__(self)
-		self.image = load_image(img_name, curdir, alpha=True)
-		self.rect = self.image.get_rect()
-		self.pos = pos
-		self.rect.x = pos[0]
-		self.rect.y = pos[1]
+    def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
+    	pygame.sprite.Sprite.__init__(self)
+    	self.image = load_image(img_name, curdir, alpha=True)
+    	self.rect = self.image.get_rect()
+    	self.pos = pos
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
         self.speed = 5
+
+    def getRect(self):
+    	return self.rect
+
+    def getPos(self):
+    	return [self.rect.x,self.rect.y]
+
+    def setPos(self,pos):
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
 
     def update(self):
         self.rect.x += self.speed
-
-	def getRect(self):
-		return self.rect
-
-	def getPos(self):
-		return [self.rect.x,self.rect.y]
-
-	def setPos(self,pos):
-		self.rect.x = pos[0]
-		self.rect.y = pos[1]
-
-	def update(self):
-		pass #el disparo depende de hacia donde este mirando el muneco
 
 
 def main():
@@ -240,7 +237,7 @@ def main():
     #----------------------General--------------------------------------------
     pygame.init()
     screen = pygame.display.set_mode([WIDTH,HIGH])
-    background = load_image('sprites/ground.jpg',curdir, alpha=False)
+    background = load_image('images/ground.jpg',curdir, alpha=False)
     screen.blit(background,[0,0])
 
     '''
@@ -256,7 +253,7 @@ def main():
     #Creamos los personajes
 
     #-----------------Jugador------------------------------------------------
-    magician = Magician('sprites/P1.png',[0,0])
+    magician = Magician('images/dere_1.png',[0,0])
     ls_all.add(magician)
     middle = [(WIDTH / 2) - (magician.getRect()[2] / 2), (HIGH / 2) - (magician.getRect()[3] / 2)]
     magician.setPos(middle)
@@ -265,7 +262,7 @@ def main():
     #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
     ls_enemies = pygame.sprite.Group()
     for i in range(0,5):
-        enemy = Zombie('sprites/zombie_izq.png',[0,0])
+        enemy = Zombie('images/izqenemigo1_1.png',[0,0])
         ls_enemies.add(enemy)
         ls_all.add(enemy)
         enemy.rect.x = random.randrange(WIDTH - 20)
