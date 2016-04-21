@@ -139,7 +139,7 @@ class Jugador(pygame.sprite.Sprite):
 
     def __init__(self,imagen):
         pygame.sprite.Sprite.__init__(self)
-        self.image = load_image(imagen,curdir,alpha=True)
+        self.imaged = [load_image(imagen,curdir,alpha=True)]
         self.rect = self.image.get_rect()
         self.vida = 100
         self.score=0
@@ -197,7 +197,7 @@ def menu(waves,dif,ANCHO,ALTO):
         menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
         pygame.display.flip()
 
-
+    s_fondo.stop()
     return waves,dif
 
 def main():
@@ -213,6 +213,53 @@ def main():
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
     pantalla.fill(blanco)
     #Fin de inicializacion de pantalla
+
+    #Cargando imagenes
+    posinif=[0,0]
+
+    #Grupos de sprites
+    ls_todos=pygame.sprite.Group()
+    ls_balaj=pygame.sprite.Group()
+    ls_enemigos=pygame.sprite.Group()
+    ls_balase=pygame.sprite.Group()
+    ls_jugadores=pygame.sprite.Group()
+
+    jugador=Jugador('dere_1.png')
+    jugador.rect.x=ANCHO/2
+    jugador.rect.y=ALTO/2
+    ls_todos.add(jugador)
+    ls_jugadores.add(jugador)
+
+
+    fondo=load_image('background.jpg',curdir, alpha=False)
+
+    pantalla.blit(fondo,posinif)
+    ls_todos.draw(pantalla)
+    ls_enemigos.draw(pantalla)
+
+    pygame.mouse.set_visible(False) #Oculta el puntero del mouse
+    pygame.display.flip()
+    reloj=pygame.time.Clock()
+    terminar=False
+    while(not terminar):
+
+        events = pygame.event.get()
+        posinip=[ANCHO/2,ALTO/2]
+        tipo = pygame.font.SysFont("monospace", 15)
+        blood = tipo.render(("Vida actual: " + str(jugador.vida)),1, blanco)
+        point = tipo.render(("Puntos: " + str(jugador.score)),1, blanco)
+
+        for event in events:
+            if event.type  == pygame.QUIT:
+                terminar=True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    jugador.image=load_image('dere_1.png',curdir, alpha=True)
+                if event.key == pygame.K_w:
+                    jugador.image=load_image('dere_1.png',curdir, alpha=True)
+
+                if event.key == pygame.K_ESCAPE:
+                    terminar=True
 
 
 
