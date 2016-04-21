@@ -55,16 +55,15 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
 		self.rect.x = pos[0]
 		self.rect.y = pos[1]
 
-class Zombie():#Hereda de la clase Enemigo
-    def __init__(self):
-        pass
+class Zombie(Enemy):#Hereda de la clase Enemigo
+    def __init__(self, img_name, pos):
+        Enemy.__init__(self, img_name, pos)
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
 	def __init__(self, img_name, pos):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = load_image(img_name, curdir, alpha=True)
 		self.rect = self.image.get_rect()
-		self.pos = pos
 		self.rect.x = pos[0]
 		self.rect.y = pos[1]
 		self.life = 5
@@ -85,9 +84,9 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
 	def setLife(self,life):
 		self.life = life
 
-class Magician(): #Hereda de la clase Player
-    def __init__(self):
-        pass
+class Magician(Player): #Hereda de la clase Player
+    def __init__(self, img_name, pos):
+        Player.__init__(self, img_name, pos)
 
 class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
 	def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
@@ -120,17 +119,18 @@ def main():
     background = load_image('sprites/ground.jpg',curdir, alpha=False)
     screen.blit(background,[0,0])
 
+    ls_all = pygame.sprite.Group() #Se almacenan todos los objetos del juego
 
     #Creamos los personajes
 
     #-----------------Jugador------------------------------------------------
-    #magician = Magician('sprites/P1.png',[0,0])
-    #magician.setPos([WIDTH / 2 - magician.getRect()[0], HIGH / 2 - magician.getRect()[1]])
+    magician = Magician('sprites/P1.png',[0,0])
+    ls_all.add(magician)
+    middle = [(WIDTH / 2) - (magician.getRect()[2] / 2), (HIGH / 2) - (magician.getRect()[3] / 2)]
+    magician.setPos(middle)
 
-    #pantalla.blit(personaje,posinip)
+    ls_all.draw(screen)
 
-    #Obtengo x,y del objeto
-    #marco=personaje.get_rect()
 
     pygame.display.flip()
 
