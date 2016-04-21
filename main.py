@@ -1,24 +1,15 @@
 import pygame
 import sys
 import os
-curdir = os.getcwd()
+curdir = os.getcwd() #Para la ruta total del sistema
 
-ALTO=400
-ANCHO=700
-blanco=(255,255,255)
+HIGH = 400
+WIDTH = 700
+WHITE = (255,255,255)
 
-#Carga los sonidos verificando la ruta
-def load_sound(nombre_s,dir_son):
-    ruta = os.path.join(dir_son, nombre_s)
-    try:
-        sound = pygame.mixer.Sound(ruta)
-    except:
-        print "Error, no se puede cargar el sonido, verifique el formato: ", ruta
-        sys.exit(1)
-    return sound
 
 #Funcion para verificar que las imagenes se cargan correctamente
-def load_image(nombre_a, dir_img, alpha=False):
+def load_image(nombre_a, dir_img, alpha = False):
     # Encontramos la ruta completa de la imagen
     ruta = os.path.join(dir_img, nombre_a)
     try:
@@ -33,33 +24,123 @@ def load_image(nombre_a, dir_img, alpha=False):
         image = image.convert()
     return image
 
+#Carga los sonidos verificando la ruta
+def load_sound(nombre_s,dir_son):
+    ruta = os.path.join(dir_son, nombre_s)
+    try:
+        sound = pygame.mixer.Sound(ruta)
+    except:
+        print "Error, no se puede cargar el sonido, verifique el formato: ", ruta
+        sys.exit(1)
+    return sound
+
+class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
+	def __init__(self, img_name, pos):
+		pygame.sprite.Sprite.__init__(self)
+		self.image = load_image(img_name, curdir, alpha=True)
+		self.rect = self.image.get_rect()
+		self.pos = pos
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+	def getRect(self):
+		return self.rect
+
+	def getPos(self):
+		return [self.x,self.y]
+
+	def setPos(self,pos):
+		self.x = pos[0]
+		self.y = pos[1]
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+class Zombie():#Hereda de la clase Enemigo
+    def __init__(self):
+        pass
+
+class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
+	def __init__(self, img_name, pos):
+		pygame.sprite.Sprite.__init__(self)
+		self.image = load_image(img_name, curdir, alpha=True)
+		self.rect = self.image.get_rect()
+		self.pos = pos
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+		self.life = 5
+
+	def getRect(self):
+		return self.rect
+
+	def getPos(self):
+		return [self.rect.x,self.rect.y]
+
+	def setPos(self,pos):
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+	def getLife(self):
+		return self.life
+
+	def setLife(self,life):
+		self.life = life
+
+class Magician(): #Hereda de la clase Player
+    def __init__(self):
+        pass
+
+class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
+	def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
+		pygame.sprite.Sprite.__init__(self)
+		self.image = load_image(img_name, curdir, alpha=True)
+		self.rect = self.image.get_rect()
+		self.pos = pos
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+	def getRect(self):
+		return self.rect
+
+	def getPos(self):
+		return [self.rect.x,self.rect.y]
+
+	def setPos(self,pos):
+		self.rect.x = pos[0]
+		self.rect.y = pos[1]
+
+	def update(self):
+		self.rect.y -= 5 #dispara hacia arriba
+
+
 def main():
-    #Inicializacion de pantalla
+
+    #-----------------Pantalla--------------------------------------------------
     pygame.init()
-    pantalla=pygame.display.set_mode([ANCHO,ALTO])
-    pantalla.fill(blanco)
+    screen = pygame.display.set_mode([WIDTH,HIGH])
+    background = load_image('sprites/ground.jpg',curdir, alpha=False)
+    screen.blit(background,[0,0])
 
-     #Cargando imagenes
-    personaje=load_image('PJ1.png', curdir, alpha=True)
-    fondo=load_image('fondo.jpg',curdir, alpha=False)
 
-    #Muestra las imagenes en primera instancia
-    posinip=[80,80]
-    posinif=[0,0]
-    pantalla.blit(fondo,posinif)
-    pantalla.blit(personaje,posinip)
+    #Creamos los personajes
+
+    #-----------------Jugador------------------------------------------------
+    #magician = Magician('sprites/P1.png',[0,0])
+    #magician.setPos([WIDTH / 2 - magician.getRect()[0], HIGH / 2 - magician.getRect()[1]])
+
+    #pantalla.blit(personaje,posinip)
 
     #Obtengo x,y del objeto
-    marco=personaje.get_rect()
+    #marco=personaje.get_rect()
 
     pygame.display.flip()
 
-    terminar=False
-    while(not terminar):
+    end = False
+    while(not end):
         events = pygame.event.get()
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                terminar=True
+            if event.type == pygame.QUIT:
+                #sys.exit(0)
+                end = True
 
 if __name__ == "__main__":
     main()
