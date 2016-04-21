@@ -2,19 +2,86 @@ import pygame
 import sys
 import os
 import random
-curdir = os.getcwd() #Para la ruta total del sistema
+curdir = os.getcwd()+"/sources" #Para la ruta total del sistema
 from pygame.locals import *
 
 HIGH = 400
 WIDTH = 700
 WHITE = (255,255,255)
 
-'''Teclas de juego:
-        A = 97 (izq)
-        D = 100 (der)
-        W = 119 (Arriba)
-        S = 115 (Abajo)
-'''
+#Algoritmo de Bresenham para la recta
+def Bresenhamecta((x0,y0),(x1,y1),pantalla):
+    dx=x1-x0
+    dy=y1-y0
+    res=[]
+    if(dy < 0 ):
+        dy=-1*dy
+        stepy=-1
+    else:
+        stepy=1
+    if(dx<0):
+        dx=-1*dx
+        stepx=-1
+    else:
+        stepx=1
+        x=x0
+        y=y0
+    res.append((x,y))
+    if(dx>dy):
+        p=2*dy-dx
+        incE=2*dy
+        incNE=2*(dy-dx)
+        while(x != x1):
+            x=x+stepx
+            if(p<0):
+                p=p+incE
+            else:
+                y=y+stepy
+                p=p+incNE
+        res.append((x,y))
+    else:
+        p=2*dx-dy
+        incE=2*dx
+        incNE=2*(dx-dy)
+        while(y != y1):
+            y=y+stepy
+            if(p<0):
+                p=p+incE
+            else:
+                x=x+stepx
+                p=p+incNE
+        res.append((x,y))
+#fin Algoritmo de Bresenham para la recta
+
+#Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
+def plotpoint((x0,y0),(x,y),pantalla,res):
+    res.append((x0+x,y0+y))
+    res.append((x0-x,y0+y))
+    res.append((x0+x,y0-y))
+    res.append((x0-x,y0-y))
+    res.append((x0+y,y0+x))
+    res.append((x0-y,y0+x))
+    res.append((x0+y,y0-x))
+    res.append((x0-y,y0-x))
+#Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
+
+#Algoritmo de Bresenham para la circunferencia
+def CircunfPtoMedio((x0,y0),r, pantalla):
+    x=0
+    y=r
+    p=1-r
+    res=[]
+    #pygame.draw.line(pantalla, blanco, (x0,y0), (x,y), 1 )
+    plotpoint((x0,y0),(x,y),pantalla,res)
+    while(x<y):
+        x=x+1
+        if(p<0):
+            p=p+2*x+1
+        else:
+            y=y-1
+            p=p+2*(x-y)+1
+    plotpoint((x0,y0),(x,y),pantalla)
+    return res
 
 #Funcion para verificar que las imagenes se cargan correctamente
 def load_image(nombre_a, dir_img, alpha = False):
@@ -73,9 +140,20 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     def moveDown(self):
         self.setPos([self.getPos()[0],self.getPos()[1] + 5])
 
+
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos):
         Enemy.__init__(self, img_name, pos)
+
+    def update(self):
+        if(self.rect.x >= (WIDTH - self.rect[2])):
+            self.direccion=1
+        if(self.rect.x <= (self.rect[2])):
+            self.direccion=0
+        if (self.direccion == 0):
+            self.rect.x+=5
+        else:
+            self.rect.x-=5
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos):
@@ -85,6 +163,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
     	self.life = 5
+        self.points = 0
 
     def getRect(self):
     	return self.rect
@@ -122,6 +201,9 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def setLife(self,life):
     	self.life = life
 
+    def crash(self):
+        self.setLife(self.getLife() - 1) #quita una vida
+
 class Magician(Player): #Hereda de la clase Player
     def __init__(self, img_name, pos):
         Player.__init__(self, img_name, pos)
@@ -134,6 +216,10 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
 		self.pos = pos
 		self.rect.x = pos[0]
 		self.rect.y = pos[1]
+        self.speed = 5
+
+    def update(self):
+        self.rect.x += self.speed
 
 	def getRect(self):
 		return self.rect
@@ -156,6 +242,14 @@ def main():
     screen = pygame.display.set_mode([WIDTH,HIGH])
     background = load_image('sprites/ground.jpg',curdir, alpha=False)
     screen.blit(background,[0,0])
+
+    '''
+    menu_d=pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
+    backgroundm=load_image('backgroundm.jpg',curdir,alpha=False)
+    s_fondo=load_sound('fondo1.sf',curdir)
+    s_fondo.play()
+    menu_d.blit(backgroundm,(0,0))
+    '''
 
     ls_all = pygame.sprite.Group() #Se almacenan todos los objetos del juego
 
