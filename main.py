@@ -237,21 +237,19 @@ def main():
     #----------------------General--------------------------------------------
     pygame.init()
     screen = pygame.display.set_mode([WIDTH,HIGH])
-    background = load_image('images/ground.jpg',curdir, alpha=False)
-    screen.blit(background,[0,0])
+    #background = load_image('images/ground.jpg',curdir, alpha=False)
+    #screen.blit(background,[0,0])
 
-    '''
-    menu_d=pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
-    backgroundm=load_image('backgroundm.jpg',curdir,alpha=False)
-    s_fondo=load_sound('fondo1.sf',curdir)
-    s_fondo.play()
-    menu_d.blit(backgroundm,(0,0))
-    '''
+    menu_display = pygame.display.set_mode((WIDTH, HIGH))
+    background_menu = load_image('images/backgroundm.jpg',curdir,alpha=False)
+    background_sound = load_sound('sounds/fondo1.sf',curdir)
+    menu_display.blit(background_menu,(0,0))
+    background_sound.play()
 
     ls_all = pygame.sprite.Group() #Se almacenan todos los objetos del juego
 
     #Creamos los personajes
-
+    '''
     #-----------------Jugador------------------------------------------------
     magician = Magician('images/dere_1.png',[0,0])
     ls_all.add(magician)
@@ -273,7 +271,7 @@ def main():
 	#----------------BALA-------------------------
 	ls_bullet = pygame.sprite.Group()
 
-
+    '''
     end = False
     while(not end):
         events = pygame.event.get()
@@ -291,9 +289,9 @@ def main():
                 if event.key == 115 :
                     magician.moveDown()
 
-        ls_all.draw(screen)
+        #ls_all.draw(screen)
         pygame.display.flip()
-        screen.blit(background,[0,0])
+        #screen.blit(background,[0,0])
 
 if __name__ == "__main__":
     main()
