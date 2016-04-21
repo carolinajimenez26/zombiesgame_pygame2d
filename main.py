@@ -5,7 +5,7 @@ import os
 curdir = os.getcwd()+"/sources"
 
 blanco=(255,255,255)
-
+rojo=(255,0,0)
 #Algoritmo de Bresenham para la recta
 def Bresenhamecta((x0,y0),(x1,y1),pantalla):
     dx=x1-x0
@@ -146,26 +146,74 @@ class Jugador(pygame.sprite.Sprite):
     def chocar(self):
         self.vida-=10
 
-def menu():
+def menu(waves,dif,ANCHO,ALTO):
     pygame.init()
-    menu_d=pygame.display.set_mode((800, 600), pygame.FULLSCREEN)
+    tipo = pygame.font.SysFont("monospace", 13)
+    menu_d=pygame.display.set_mode((ANCHO, ALTO), pygame.FULLSCREEN)
     backgroundm=load_image('backgroundm.jpg',curdir,alpha=False)
+    ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, blanco)
+    ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, blanco)
+    ad3 = tipo.render("Escape para salir",1, blanco)
     s_fondo=load_sound('fondo1.sf',curdir)
     s_fondo.play()
     menu_d.blit(backgroundm,(0,0))
+    menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
+    menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
+    menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
 
     pygame.display.flip()
 
     terminar=False
-
+    max_waves=False
+    min_waves=False
     while(not terminar):
+        ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, blanco)
+        ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, blanco)
         events = pygame.event.get()
+
         for event in events:
-            if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+            if event.type == pygame.K_SPACE or event.type == pygame.QUIT:
                 terminar=True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_KP_PLUS:
+                    if(not waves>=10):
+                        waves+=1
+                if event.key == pygame.K_KP_MINUS:
+                    if(not waves<=5):
+                        waves-=1
+                if event.key == pygame.K_d:
+                    if(not dif>=3):
+                        dif+=1
+                if event.key == pygame.K_r:
+                    if(not dif <= 1):
+                        dif-=1
+                if event.key == pygame.K_ESCAPE:
+                    terminar=True
+
+
+        menu_d.blit(backgroundm,(0,0))
+        menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
+        menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
+        menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
+        pygame.display.flip()
+
+
+    return waves,dif
 
 def main():
-    menu()
+    ANCHO = 800
+    ALTO = 600
+    waves=5
+    dificultad=1
+    waves,dificultad = menu(waves,dificultad,ANCHO,ALTO)
+
+    #Inicializacion de pantalla
+    pygame.init()
+    pantalla=pygame.display.set_mode([ANCHO,ALTO])
+    pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
+    pantalla.fill(blanco)
+    #Fin de inicializacion de pantalla
+
 
 
 
