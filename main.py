@@ -139,9 +139,14 @@ class Jugador(pygame.sprite.Sprite):
 
     def __init__(self,imagen):
         pygame.sprite.Sprite.__init__(self)
-        self.imaged = [load_image(imagen,curdir,alpha=True)]
+        self.image = load_image(imagen,curdir,alpha=True)
+        self.imaged = []
+        self.imagei = []
+        self.imagenar = []
+        self.imagena = []
         self.rect = self.image.get_rect()
         self.vida = 100
+        self.speed = 5
         self.score=0
     def chocar(self):
         self.vida-=10
@@ -227,6 +232,14 @@ def main():
     jugador=Jugador('dere_1.png')
     jugador.rect.x=ANCHO/2
     jugador.rect.y=ALTO/2
+    jugador.imaged.append(load_image('dere_1.png',curdir,alpha=True))
+    jugador.imaged.append(load_image('dere_2.png',curdir,alpha=True))
+    jugador.imagenar.append(load_image('up_1.png',curdir,alpha=True))
+    jugador.imagenar.append(load_image('up_2.png',curdir,alpha=True))
+    jugador.imagei.append(load_image('iz_1.png',curdir,alpha=True))
+    jugador.imagei.append(load_image('iz_2.png',curdir,alpha=True))
+    jugador.imagena.append(load_image('ab_1.png',curdir,alpha=True))
+    jugador.imagena.append(load_image('ab_2.png',curdir,alpha=True))
     ls_todos.add(jugador)
     ls_jugadores.add(jugador)
 
@@ -241,6 +254,7 @@ def main():
     pygame.display.flip()
     reloj=pygame.time.Clock()
     terminar=False
+    player_current=0
     while(not terminar):
 
         events = pygame.event.get()
@@ -254,14 +268,30 @@ def main():
                 terminar=True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    jugador.image=load_image('dere_1.png',curdir, alpha=True)
+                    player_current = (player_current+1)%len(jugador.imagei)
+                    jugador.image = jugador.imagei[player_current]
+                    jugador.rect.x-=jugador.speed
                 if event.key == pygame.K_w:
-                    jugador.image=load_image('dere_1.png',curdir, alpha=True)
-
+                    player_current = (player_current+1)%len(jugador.imagenar)
+                    jugador.image = jugador.imagenar[player_current]
+                    jugador.rect.y-=jugador.speed
+                if event.key == pygame.K_d:
+                    player_current = (player_current+1)%len(jugador.imaged)
+                    jugador.image = jugador.imaged[player_current]
+                    jugador.rect.x+=jugador.speed
+                if event.key == pygame.K_s:
+                    player_current = (player_current+1)%len(jugador.imagena)
+                    jugador.image = jugador.imagena[player_current]
+                    jugador.rect.y+=jugador.speed
                 if event.key == pygame.K_ESCAPE:
                     terminar=True
 
-
+        pantalla.blit(fondo,posinif)
+        ls_todos.draw(pantalla)
+        ls_enemigos.draw(pantalla)
+        ls_todos.update()
+        pygame.display.flip()
+        reloj.tick(60)
 
 
 if __name__ == "__main__":
