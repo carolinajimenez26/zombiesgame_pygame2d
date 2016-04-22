@@ -197,22 +197,34 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def moveLeft(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5
-        self.setPos([self.getPos()[0] - increment_x,self.getPos()[1]])
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x - increment_x >= 0):
+            self.setPos([x - increment_x,y])
 
     def moveRight(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5
-        self.setPos([self.getPos()[0] + increment_x,self.getPos()[1]])
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x + increment_x < WIDTH - self.rect[2]):
+            self.setPos([x + increment_x,y])
 
     def moveUp(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5
-        self.setPos([self.getPos()[0],self.getPos()[1] - increment_y])
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y >= 0):
+            self.setPos([x,y - increment_y])
 
     def moveDown(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5
-        self.setPos([self.getPos()[0],self.getPos()[1] + increment_y])
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y < HIGH - self.rect[3]): # si no se pasa de la pantalla
+            self.setPos([x,y + increment_y])
 
     def getLife(self):
     	return self.life
