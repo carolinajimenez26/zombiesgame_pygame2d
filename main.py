@@ -412,42 +412,44 @@ def main():
         for event in events:
             if event.type  == pygame.QUIT:
                 terminar=True
-            if event.type == pygame.KEYDOWN:
 
-                if event.key == pygame.K_a:
-                    player_current = (player_current+1)%len(magician.imagei)
-                    magician.image = magician.imagei[player_current]
-                    magician.moveLeft()
-                    magician.setDir(1)
+        keys = pygame.key.get_pressed()
 
-                if event.key == pygame.K_w:
-                    player_current = (player_current+1)%len(magician.imagenar)
-                    magician.image = magician.imagenar[player_current]
-                    magician.moveUp()
-                    magician.setDir(2)
+        if keys[pygame.K_a]:
+            player_current = (player_current+1)%len(magician.imagei)
+            magician.image = magician.imagei[player_current]
+            magician.moveLeft()
+            magician.setDir(1)
 
-                if event.key == pygame.K_d:
-                    player_current = (player_current+1)%len(magician.imaged)
-                    magician.image = magician.imaged[player_current]
-                    magician.moveRight()
-                    magician.setDir(0)
+        if keys[pygame.K_w]:
+            player_current = (player_current+1)%len(magician.imagenar)
+            magician.image = magician.imagenar[player_current]
+            magician.moveUp()
+            magician.setDir(2)
 
-                if event.key == pygame.K_s:
-                    player_current = (player_current+1)%len(magician.imagena)
-                    magician.image = magician.imagena[player_current]
-                    magician.moveDown()
-                    magician.setDir(3)
+        if keys[pygame.K_d]:
+            player_current = (player_current+1)%len(magician.imaged)
+            magician.image = magician.imaged[player_current]
+            magician.moveRight()
+            magician.setDir(0)
 
-                if event.key == pygame.K_SPACE:
-                    bala = Bullet('images/bala.png')
-                    #bala.setDir() = magician.getDir()
-                    bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
-                    ls_balaj.add(bala)
-                    ls_todos.add(bala)
-                    disparo = True
+        if keys[pygame.K_s]:
+            player_current = (player_current+1)%len(magician.imagena)
+            magician.image = magician.imagena[player_current]
+            magician.moveDown()
+            magician.setDir(3)
 
-                if event.key == pygame.K_ESCAPE:
-                    terminar = True
+        if keys[pygame.K_SPACE]:
+            bala = Bullet('images/bala.png')
+            #bala.setDir() = magician.getDir()
+            bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
+            ls_balaj.add(bala)
+            ls_todos.add(bala)
+            disparo = True
+
+        if keys[pygame.K_ESCAPE]:
+            terminar = True
+
 
         screen.blit(background,[0,0])
         ls_todos.draw(screen)
