@@ -488,7 +488,7 @@ def main():
             cont+=1
         if(cont >= 8):
             cont=0
-
+        #lista de balas
         for b in ls_balaj:
 			ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
 			for impacto in ls_impactos:
