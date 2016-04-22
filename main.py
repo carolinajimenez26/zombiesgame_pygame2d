@@ -131,8 +131,19 @@ class Bala(pygame.sprite.Sprite):
         self.image = load_image(imagen,curdir,alpha=True)
         self.rect = self.image.get_rect()
         self.velocidad=5
+        self.jugadordir=0
     def update(self):
-        self.rect.x+=self.velocidad
+        if(self.jugadordir==0):
+            self.rect.x+=self.velocidad
+        elif 1:
+            if(self.jugadordir==1):
+                self.rect.x-=self.velocidad
+            elif 1:
+                if(self.jugadordir==2):
+                    self.rect.y-=self.velocidad
+                elif 1:
+                    if(self.jugadordir==3):
+                        self.rect.y+=self.velocidad
 
 
 class Jugador(pygame.sprite.Sprite):
@@ -147,6 +158,7 @@ class Jugador(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.vida = 100
         self.speed = 5
+        self.dir=0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
         self.score=0
     def chocar(self):
         self.vida-=10
@@ -254,6 +266,7 @@ def main():
     pygame.display.flip()
     reloj=pygame.time.Clock()
     terminar=False
+    disparo=False
     player_current=0
     while(not terminar):
 
@@ -267,22 +280,40 @@ def main():
             if event.type  == pygame.QUIT:
                 terminar=True
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_a:
                     player_current = (player_current+1)%len(jugador.imagei)
                     jugador.image = jugador.imagei[player_current]
                     jugador.rect.x-=jugador.speed
+                    jugador.dir=1
+
                 if event.key == pygame.K_w:
                     player_current = (player_current+1)%len(jugador.imagenar)
                     jugador.image = jugador.imagenar[player_current]
                     jugador.rect.y-=jugador.speed
+                    jugador.dir=2
+
                 if event.key == pygame.K_d:
                     player_current = (player_current+1)%len(jugador.imaged)
                     jugador.image = jugador.imaged[player_current]
                     jugador.rect.x+=jugador.speed
+                    jugador.dir=0
+
                 if event.key == pygame.K_s:
                     player_current = (player_current+1)%len(jugador.imagena)
                     jugador.image = jugador.imagena[player_current]
                     jugador.rect.y+=jugador.speed
+                    jugador.dir=3
+
+                if event.key == pygame.K_SPACE:
+                    bala = Bala('bala.png')
+                    bala.jugadordir=jugador.dir
+                    bala.rect.x=jugador.rect.x+10
+                    bala.rect.y=jugador.rect.y+10
+                    ls_balaj.add(bala)
+                    ls_todos.add(bala)
+                    disparo=True
+
                 if event.key == pygame.K_ESCAPE:
                     terminar=True
 
