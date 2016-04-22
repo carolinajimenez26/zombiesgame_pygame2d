@@ -201,6 +201,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         y = self.getPos()[1]
         if(x - increment_x >= 0):
             self.setPos([x - increment_x,y])
+            self.dir = 1
 
     def moveRight(self):
         increment_x = self.getRect()[2] / 5
@@ -209,6 +210,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         y = self.getPos()[1]
         if(x + increment_x < WIDTH - self.rect[2]):
             self.setPos([x + increment_x,y])
+            self.dir = 0
 
     def moveUp(self):
         increment_x = self.getRect()[2] / 5
@@ -217,6 +219,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         y = self.getPos()[1]
         if(y + increment_y >= 0):
             self.setPos([x,y - increment_y])
+            self.dir = 2
 
     def moveDown(self):
         increment_x = self.getRect()[2] / 5
@@ -225,6 +228,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         y = self.getPos()[1]
         if(y + increment_y < HIGH - self.rect[3]): # si no se pasa de la pantalla
             self.setPos([x,y + increment_y])
+            self.dir = 3
 
     def getLife(self):
     	return self.life
@@ -266,24 +270,21 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
 
-    def setDir(self,dir):#modifica la direccion del magician
+    def setDir(self,dir):
         self.magiciandir = dir
 
     def getDir(self):
         return self.magiciandir
 
     def update(self):
-        if(self.magiciandir == 0):
+        if(self.magiciandir == 0): #derecha
             self.rect.x += self.speed
-        elif 1:
-            if(self.magiciandir == 1):
-                self.rect.x -= self.speed
-            elif 1:
-                if(self.magiciandir==2):
-                    self.rect.y -= self.speed
-                elif 1:
-                    if(self.magiciandir==3):
-                        self.rect.y += self.speed
+        if(self.magiciandir == 1):#izquierda
+            self.rect.x -= self.speed
+        if(self.magiciandir == 2):#arriba
+            self.rect.y -= self.speed
+        if(self.magiciandir == 3):#abajo
+            self.rect.y += self.speed
 
 def initGame():
     #por defecto:
@@ -452,9 +453,19 @@ def main():
             magician.setDir(3)
 
         if keys[pygame.K_SPACE]:
-            bala = Bullet('images/bala.png')
-            #bala.setDir() = magician.getDir()
-            bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
+            bala = Bullet('images/bala.png',magician.getPos())#la posicion inicial depende de objeto que este disparando
+            dir = magician.getDir()
+            bala.setDir(dir)
+
+            if(dir == 0):#derecha
+                bala.setPos([magician.getPos()[0] + magician.getRect()[2]/2,magician.getPos()[1]])
+            if(dir == 1):#izquierda
+                bala.setPos([magician.getPos()[0] - magician.getRect()[2]/2,magician.getPos()[1]])
+            if(dir == 2):#arriba
+                bala.setPos([magician.getPos()[0],magician.getPos()[1] - magician.getRect()[3]])
+            if(dir == 3):#abajo
+                bala.setPos([magician.getPos()[0],magician.getPos()[1] + magician.getRect()[3]])
+
             ls_balaj.add(bala)
             ls_todos.add(bala)
             disparo = True
@@ -464,9 +475,9 @@ def main():
 
 
         screen.blit(background,[0,0])
-        ls_todos.draw(screen)
         ls_enemigos.draw(screen)
         ls_todos.update()
+        ls_todos.draw(screen)
         pygame.display.flip()
         reloj.tick(60)
 
