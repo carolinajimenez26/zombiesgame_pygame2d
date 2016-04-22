@@ -117,6 +117,13 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.pos = pos
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
+        self.direccion = 0
+
+    def getDir(self):
+        return self.direccion
+
+    def setDir(self, dir):
+        self.direccion = dir
 
     def getRect(self):
     	return self.rect
@@ -147,13 +154,13 @@ class Zombie(Enemy):#Hereda de la clase Enemigo
 
     def update(self):
         if(self.rect.x >= (WIDTH - self.rect[2])):
-            self.direccion=1
+            self.direccion = 1
         if(self.rect.x <= (self.rect[2])):
-            self.direccion=0
+            self.direccion = 0
         if (self.direccion == 0):
-            self.rect.x+=5
+            self.rect.x += 5
         else:
-            self.rect.x-=5
+            self.rect.x -= 5
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos):
@@ -163,7 +170,19 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
     	self.life = 5
-        self.points = 0
+        self.score = 0
+        self.dir = 0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
+        #imagenes para movimiento
+        self.imaged = [] #derecha
+        self.imagei = [] #izquierda
+        self.imagenar = [] #arriba
+        self.imagena = [] #abajo
+
+    def getScore(self):
+        return self.score
+
+    def setScore(self, score):
+        return self.score
 
     def getRect(self):
     	return self.rect
@@ -204,6 +223,12 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def crash(self):
         self.setLife(self.getLife() - 1) #quita una vida
 
+    def getDir(self):
+        return self.dir
+
+    def setDir(self,dir):
+        self.dir = dir
+
 class Magician(Player): #Hereda de la clase Player
     def __init__(self, img_name, pos):
         Player.__init__(self, img_name, pos)
@@ -217,6 +242,7 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
         self.speed = 5
+        self.magiciandir = 0 #dispara dependiendo de la posicion del magician
 
     def getRect(self):
     	return self.rect
@@ -228,70 +254,207 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
 
-    def update(self):
-        self.rect.x += self.speed
+    def setDir(self,dir):#modifica la direccion del magician
+        self.magiciandir = dir
 
+    def getDir(self):
+        return self.magiciandir
+
+    def update(self):
+        if(self.magiciandir == 0):
+            self.rect.x += self.speed
+        elif 1:
+            if(self.magiciandir == 1):
+                self.rect.x -= self.speed
+            elif 1:
+                if(self.magiciandir==2):
+                    self.rect.y -= self.speed
+                elif 1:
+                    if(self.magiciandir==3):
+                        self.rect.y += self.speed
+
+def initGame():
+    #por defecto:
+    ANCHO = 800
+    ALTO = 600
+    waves = 5
+    dif = 1
+
+    pygame.init()
+    tipo = pygame.font.SysFont("monospace", 13)
+    menu_d = pygame.display.set_mode((ANCHO, ALTO), pygame.FULLSCREEN)
+
+    #imagen de fondo
+    backgroundm = load_image('images/backgroundm.jpg',curdir,alpha = False)
+    menu_d.blit(backgroundm,(0,0))
+
+    #sonido de fondo
+    s_fondo = load_sound('sounds/fondo1.sf',curdir)
+    s_fondo.play()
+
+    #--------------------opciones del juego------------------------------
+    ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, WHITE)
+    ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, WHITE)
+    ad3 = tipo.render("Escape para salir",1, WHITE)
+
+    #los posiciona
+    menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
+    menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
+    menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
+
+    #------------------------------------------------------------------------
+    pygame.display.flip()
+
+    terminar = False
+    max_waves = False
+    min_waves = False
+
+    while(not terminar):
+
+        ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, WHITE)
+        ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, WHITE)
+
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                terminar = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_KP_PLUS: # +
+                    if(not waves >= 10):
+                        waves += 1
+                if event.key == pygame.K_KP_MINUS: # -
+                    if(not waves <= 5):
+                        waves -= 1
+                if event.key == pygame.K_d:
+                    if(not dif >= 3):
+                        dif += 1
+                if event.key == pygame.K_r:
+                    if(not dif <= 1):
+                        dif -= 1
+                if event.key == pygame.K_ESCAPE:
+                    terminar = True
+
+
+        menu_d.blit(backgroundm,(0,0))
+        menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
+        menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
+        menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
+        pygame.display.flip()
+
+    s_fondo.stop()
+    return waves,dif #retorna lo que escoge el usuario
 
 def main():
+
+    #------------------------Inicia el menu del juego----------------------
+    #waves,dificultad = initGame()
 
     #----------------------General--------------------------------------------
     pygame.init()
     screen = pygame.display.set_mode([WIDTH,HIGH])
-    #background = load_image('images/ground.jpg',curdir, alpha=False)
+    background = load_image('images/background.jpg',curdir, alpha = False)
     #screen.blit(background,[0,0])
+    pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')#nombre ventana
 
-    menu_display = pygame.display.set_mode((WIDTH, HIGH))
-    background_menu = load_image('images/backgroundm.jpg',curdir,alpha=False)
-    background_sound = load_sound('sounds/fondo1.sf',curdir)
-    menu_display.blit(background_menu,(0,0))
-    background_sound.play()
-
-    ls_all = pygame.sprite.Group() #Se almacenan todos los objetos del juego
+    #Grupos de sprites
+    ls_todos = pygame.sprite.Group()
+    ls_balaj = pygame.sprite.Group()
+    ls_enemigos = pygame.sprite.Group()
+    ls_balase = pygame.sprite.Group()
+    ls_magicianes = pygame.sprite.Group()
 
     #Creamos los personajes
-    '''
-    #-----------------Jugador------------------------------------------------
+
+    #-----------------magician------------------------------------------------
     magician = Magician('images/dere_1.png',[0,0])
-    ls_all.add(magician)
     middle = [(WIDTH / 2) - (magician.getRect()[2] / 2), (HIGH / 2) - (magician.getRect()[3] / 2)]
-    magician.setPos(middle)
+    magician.setPos(middle) #posiciona el magician en la mitad de la pantalla
+
+    #Agrega las imagenes del magician
+    magician.imaged.append(load_image('images/dere_1.png',curdir,alpha=True))
+    magician.imaged.append(load_image('images/dere_2.png',curdir,alpha=True))
+    magician.imagenar.append(load_image('images/up_1.png',curdir,alpha=True))
+    magician.imagenar.append(load_image('images/up_2.png',curdir,alpha=True))
+    magician.imagei.append(load_image('images/iz_1.png',curdir,alpha=True))
+    magician.imagei.append(load_image('images/iz_2.png',curdir,alpha=True))
+    magician.imagena.append(load_image('images/ab_1.png',curdir,alpha=True))
+    magician.imagena.append(load_image('images/ab_2.png',curdir,alpha=True))
+
+    ls_todos.add(magician)
+    ls_magicianes.add(magician)
 
     #----------------ENEMIGOS-------------------------
     #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
     ls_enemies = pygame.sprite.Group()
     for i in range(0,5):
         enemy = Zombie('images/izqenemigo1_1.png',[0,0])
-        ls_enemies.add(enemy)
-        ls_all.add(enemy)
-        enemy.rect.x = random.randrange(WIDTH - 20)
-        enemy.rect.y = random.randrange(HIGH - 20)
+        ls_enemigos.add(enemy)
+        ls_todos.add(enemy)
+        enemy.setPos([random.randrange(WIDTH - 20),random.randrange(HIGH - 20)])
 
-    #ls_enemies.draw(screen)#posiciona los enemigos
+    screen.blit(background,[0,0])
+    ls_todos.draw(screen)
+    ls_enemigos.draw(screen)
 
-	#----------------BALA-------------------------
-	ls_bullet = pygame.sprite.Group()
+    pygame.display.flip()
+    reloj = pygame.time.Clock()
+    terminar = False
+    disparo = False
+    player_current = 0
 
-    '''
-    end = False
-    while(not end):
+    while(not terminar):
         events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                #sys.exit(0)
-                end = True
-            if event.type == KEYDOWN:
-                if event.key == 97 :
-                    magician.moveLeft()
-                if event.key == 100 :
-                    magician.moveRight()
-                if event.key == 119 :
-                    magician.moveUp()
-                if event.key == 115 :
-                    magician.moveDown()
 
-        #ls_all.draw(screen)
+        tipo = pygame.font.SysFont("monospace", 15)
+        blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, WHITE)
+        point = tipo.render(("Puntos: " + str(magician.getScore())),1, WHITE)
+
+        for event in events:
+            if event.type  == pygame.QUIT:
+                terminar=True
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_a:
+                    player_current = (player_current+1)%len(magician.imagei)
+                    magician.image = magician.imagei[player_current]
+                    magician.moveLeft()
+                    magician.setDir(1)
+
+                if event.key == pygame.K_w:
+                    player_current = (player_current+1)%len(magician.imagenar)
+                    magician.image = magician.imagenar[player_current]
+                    magician.moveUp()
+                    magician.setDir(2)
+
+                if event.key == pygame.K_d:
+                    player_current = (player_current+1)%len(magician.imaged)
+                    magician.image = magician.imaged[player_current]
+                    magician.moveRight()
+                    magician.setDir(0)
+
+                if event.key == pygame.K_s:
+                    player_current = (player_current+1)%len(magician.imagena)
+                    magician.image = magician.imagena[player_current]
+                    magician.moveDown()
+                    magician.setDir(3)
+
+                if event.key == pygame.K_SPACE:
+                    bala = Bullet('images/bala.png')
+                    #bala.setDir() = magician.getDir()
+                    bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
+                    ls_balaj.add(bala)
+                    ls_todos.add(bala)
+                    disparo = True
+
+                if event.key == pygame.K_ESCAPE:
+                    terminar = True
+
+        screen.blit(background,[0,0])
+        ls_todos.draw(screen)
+        ls_enemigos.draw(screen)
+        ls_todos.update()
         pygame.display.flip()
-        #screen.blit(background,[0,0])
+        reloj.tick(60)
 
 if __name__ == "__main__":
     main()
