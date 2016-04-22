@@ -9,8 +9,17 @@ HIGH = 400
 WIDTH = 700
 WHITE = (255,255,255)
 
+
+def checkCollision(sprite1, sprite2):
+    col = pygame.sprite.collide_rect(sprite1, sprite2)
+    if col == True:
+        return True
+    else:
+        return False
+
+
 #Algoritmo de Bresenham para la recta
-def Bresenhamecta((x0,y0),(x1,y1),pantalla):
+def Bresenhamrecta((x0,y0),(x1,y1)):
     dx=x1-x0
     dy=y1-y0
     res=[]
@@ -51,6 +60,7 @@ def Bresenhamecta((x0,y0),(x1,y1),pantalla):
                 x=x+stepx
                 p=p+incNE
         res.append((x,y))
+    return res
 #fin Algoritmo de Bresenham para la recta
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
@@ -117,6 +127,7 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.pos = pos
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
+        self.jugador = (0,0)
         self.direccion = 0
 
     def getDir(self):
@@ -153,14 +164,7 @@ class Zombie(Enemy):#Hereda de la clase Enemigo
         Enemy.__init__(self, img_name, pos)
 
     def update(self):
-        if(self.rect.x >= (WIDTH - self.rect[2])):
-            self.direccion = 1
-        if(self.rect.x <= (self.rect[2])):
-            self.direccion = 0
-        if (self.direccion == 0):
-            self.rect.x += 5
-        else:
-            self.rect.x -= 5
+        movimiento = Bresenhamrecta(self.getPos(),self.jugador)
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos):
@@ -177,12 +181,13 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.imagei = [] #izquierda
         self.imagenar = [] #arriba
         self.imagena = [] #abajo
+        self.enemigos=0
 
     def getScore(self):
         return self.score
 
     def setScore(self, score):
-        return self.score
+        self.score += score
 
     def getRect(self):
     	return self.rect
@@ -374,7 +379,7 @@ def main():
     ls_enemigos = pygame.sprite.Group()
     ls_balase = pygame.sprite.Group()
     ls_magicianes = pygame.sprite.Group()
-
+    ls_choque= pygame.sprite.Group()
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
@@ -413,25 +418,33 @@ def main():
     terminar = False
     disparo = False
     player_current = 0
-
+    cont=0
+    flag=False
     while(not terminar):
         events = pygame.event.get()
 
         tipo = pygame.font.SysFont("monospace", 15)
-        blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, WHITE)
-        point = tipo.render(("Puntos: " + str(magician.getScore())),1, WHITE)
-
+        blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (0,0,0))
+        point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
+        keys = pygame.key.get_pressed()
         for event in events:
             if event.type  == pygame.QUIT:
                 terminar=True
+            if keys[pygame.K_SPACE]:
+                bala = Bullet('images/bala.png',magician.getPos())
+                bala.setDir(magician.getDir())
+                bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
+                ls_balaj.add(bala)
+                ls_todos.add(bala)
+                disparo = True
 
-        keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
             player_current = (player_current+1)%len(magician.imagei)
             magician.image = magician.imagei[player_current]
             magician.moveLeft()
             magician.setDir(1)
+
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -451,24 +464,44 @@ def main():
             magician.moveDown()
             magician.setDir(3)
 
-        if keys[pygame.K_SPACE]:
-            bala = Bullet('images/bala.png')
-            #bala.setDir() = magician.getDir()
-            bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
-            ls_balaj.add(bala)
-            ls_todos.add(bala)
-            disparo = True
-
         if keys[pygame.K_ESCAPE]:
             terminar = True
 
 
         screen.blit(background,[0,0])
+        screen.blit(blood,[0,10])
+        screen.blit(point,[0,25])
         ls_todos.draw(screen)
         ls_enemigos.draw(screen)
         ls_todos.update()
         pygame.display.flip()
         reloj.tick(60)
+        magician.enemigos=len(ls_enemigos)
+
+        for enemigo in ls_enemigos:
+            if(checkCollision(magician,enemigo)): # si se choco
+                if(cont == 0):
+                    magician.crash()
+                    print magician.getLife()
+                    flag=True
+        if(flag):
+            cont+=1
+        if(cont >= 8):
+            cont=0
+
+        for b in ls_balaj:
+			ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
+			for impacto in ls_impactos:
+				ls_balaj.remove(b)
+				ls_todos.remove(b)
+				magician.setScore(1)
+
+
+        for enemigo in ls_enemigos:
+            e.jugador = magician.getPos()
+
+        magician.mov=0
+
 
 if __name__ == "__main__":
     main()
