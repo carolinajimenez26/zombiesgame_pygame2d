@@ -140,7 +140,7 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     	return self.rect
 
     def getPos(self):
-    	return [self.x,self.y]
+    	return [self.rect.x,self.rect.y]
 
     def setPos(self,pos):
     	self.rect.x = pos[0]
@@ -164,7 +164,8 @@ class Zombie(Enemy):#Hereda de la clase Enemigo
         Enemy.__init__(self, img_name, pos)
 
     def update(self):
-        movimiento = Bresenhamrecta(self.getPos(),self.jugador)
+        #movimiento = Bresenhamrecta(self.getPos(),self.jugador)
+        pass
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos):
@@ -517,7 +518,7 @@ def main():
 
 
         for enemigo in ls_enemigos:
-            e.jugador = magician.getPos()
+            enemigo.jugador = magician.getPos()
 
         magician.mov=0
 
