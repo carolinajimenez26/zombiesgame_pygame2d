@@ -120,21 +120,13 @@ class Enemigo(pygame.sprite.Sprite):
         self.direccion=0
         self.jugador = (0,0)
         self.cont=0
-        self.mov=0
-        self.flag=True
         self.puntos=[]
     def update(self):
-            if(self.mov==0):
-                if(self.flag):
-                    self.puntos=Bresenhamecta((self.rect.x,self.rect.y),self.jugador)
-                    self.flag=False
-                self.rect.x,self.rect.y=self.puntos[self.cont]
-            if(self.cont <= (len(self.puntos)-2)):
-                self.cont+=1
-            if(self.mov==1):
-                self.cont=0
-                self.flag=True
-                self.mov=0
+        self.puntos=Bresenhamecta((self.rect.x,self.rect.y),self.jugador)
+        if(self.cont <= len(self.puntos)-2):
+            self.rect.x,self.rect.y=self.puntos[self.cont]
+            self.cont+=self.cont
+
 
 class Boss(Enemigo):
     def __init__(self,imagen):
@@ -201,6 +193,7 @@ def menu(waves,dif,ANCHO,ALTO):
     terminar=False
     max_waves=False
     min_waves=False
+
     while(not terminar):
         ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, blanco)
         ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, blanco)
@@ -303,6 +296,34 @@ def main():
         blood = tipo.render(("Vida actual: " + str(jugador.vida)),1, blanco)
         point = tipo.render(("Puntos: " + str(jugador.score)),1, blanco)
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
+            player_current = (player_current+1)%len(jugador.imagei)
+            jugador.image = jugador.imagei[player_current]
+            jugador.rect.x-=jugador.speed
+            jugador.dir=1
+
+
+        if keys[pygame.K_w]:
+            player_current = (player_current+1)%len(jugador.imagenar)
+            jugador.image = jugador.imagenar[player_current]
+            jugador.rect.y-=jugador.speed
+            jugador.dir=2
+
+
+        if keys[pygame.K_d]:
+            player_current = (player_current+1)%len(jugador.imaged)
+            jugador.image = jugador.imaged[player_current]
+            if(jugador.rect.x+jugador.speed < ANCHO-jugador.rect[2]):
+                jugador.rect.x+=jugador.speed
+            jugador.dir=0
+
+
+        if keys[pygame.K_s]:
+            player_current = (player_current+1)%len(jugador.imagena)
+            jugador.image = jugador.imagena[player_current]
+            jugador.rect.y+=jugador.speed
+            jugador.dir=3
+
         for event in events:
             if event.type  == pygame.QUIT:
                 terminar=True
@@ -318,40 +339,6 @@ def main():
 
                 if event.key == pygame.K_ESCAPE:
                     terminar=True
-            if keys[pygame.K_a]:
-                player_current = (player_current+1)%len(jugador.imagei)
-                jugador.image = jugador.imagei[player_current]
-                jugador.rect.x-=jugador.speed
-                jugador.dir=1
-                for e in ls_enemigos:
-                    e.mov=1
-
-            if keys[pygame.K_w]:
-                player_current = (player_current+1)%len(jugador.imagenar)
-                jugador.image = jugador.imagenar[player_current]
-                jugador.rect.y-=jugador.speed
-                jugador.dir=2
-                for e in ls_enemigos:
-                    e.mov=1
-
-            if keys[pygame.K_d]:
-                player_current = (player_current+1)%len(jugador.imaged)
-                jugador.image = jugador.imaged[player_current]
-                if(jugador.rect.x+jugador.speed < ANCHO-jugador.rect[2]):
-                    jugador.rect.x+=jugador.speed
-                jugador.dir=0
-                for e in ls_enemigos:
-                    e.mov=1
-
-            if keys[pygame.K_s]:
-                player_current = (player_current+1)%len(jugador.imagena)
-                jugador.image = jugador.imagena[player_current]
-                jugador.rect.y+=jugador.speed
-                jugador.dir=3
-                for e in ls_enemigos:
-                    e.mov=1
-
-
 
         pantalla.blit(fondo,posinif)
         ls_todos.draw(pantalla)
