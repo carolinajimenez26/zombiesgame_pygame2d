@@ -415,7 +415,7 @@ def main():
 
     #----------------------General--------------------------------------------
     pygame.init()
-    screen = pygame.display.set_mode([WIDTH,HIGH])
+    screen = pygame.display.set_mode([WIDTH+100,HIGH+100])
     background = load_image('images/background.jpg',curdir, alpha = False)
     #screen.blit(background,[0,0])
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')#nombre ventana
@@ -508,8 +508,7 @@ def main():
             magician.setDir(1)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveLeft()
+                e.move(magician.getPos()) #se mueve hacia el jugador
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -559,6 +558,8 @@ def main():
             if(checkCollision(magician,enemigo)): # si se choco
                 if(cont == 0):
                     magician.crash()
+                    if(magician.getLife() == 0):
+                        terminar = True #debe volver a cargar el menu ppal
                     print magician.getLife()
                     flag=True
         if(flag):
