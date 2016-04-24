@@ -92,7 +92,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect = self.image.get_rect()
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
-    	self.life = 5
+    	self.life = 100
         self.score = 0
         self.dir = 0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
         #imagenes para movimiento

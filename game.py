@@ -9,8 +9,6 @@ def game(ANCHO,ALTO):
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
     pantalla.fill((0,0,0))
-
-
     #Fin de inicializacion de pantalla
 
     #Cargando imagenes
@@ -76,7 +74,10 @@ def game(ANCHO,ALTO):
 
         tipo = pygame.font.SysFont("monospace", 15)
         blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (0,0,0))
+        pantalla.blit(blood, (0, ALTO))
         point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
+        pantalla.fill(pygame.Color("white")) 
+
         keys = pygame.key.get_pressed()
 
         for event in events:
