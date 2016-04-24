@@ -1,5 +1,7 @@
 from imports import *
 
+aux = True
+
 def checkCollision(sprite1, sprite2):
     col = pygame.sprite.collide_rect(sprite1, sprite2)
     if col == True:
@@ -8,52 +10,60 @@ def checkCollision(sprite1, sprite2):
         return False
 
 #Algoritmo de Bresenham para la recta
-def Bresenhamecta((x0,y0),(x1,y1)):
+def Bresenhamrecta(p,obj):
+    x0 = p[0][0]
+    y0 = p[0][1]
+    x1 = p[1][0]
+    y1 = p[1][1]
+    x = 0
+    y = 0
+    print p
     dx=x1-x0
     dy=y1-y0
     res=[]
-    #Determinar que punto usar para empezar y cual para terminar
-    if(dy<0):
-        dy=-dy
+    if(dy < 0 ):
+        dy=-1*dy
         stepy=-1
     else:
         stepy=1
-
     if(dx<0):
-        dx=-dx
+        dx=-1*dx
         stepx=-1
     else:
         stepx=1
-    x=x0
-    y=y0
-    res.append((x,y))
-    #Se cicla hasta llegar al final de la linea
+        x=x0
+        y=y0
+
     if(dx>dy):
         p=2*dy-dx
         incE=2*dy
         incNE=2*(dy-dx)
-        while(x <= x1):
+        while(x != x1 and aux):
             x=x+stepx
             if(p<0):
                 p=p+incE
             else:
                 y=y+stepy
                 p=p+incNE
-            res.append((x,y))
+        res.append([x,y])
+        #obj.setPos([x,y])
     else:
         p=2*dx-dy
         incE=2*dx
         incNE=2*(dx-dy)
-        while(y<=y1):
+        while(y != y1 and aux):
+            print "bres"
             y=y+stepy
             if(p<0):
                 p=p+incE
             else:
                 x=x+stepx
                 p=p+incNE
-            res.append((x,y))
+        res.append([x,y])
+    #obj.setPos([x,y])
     return res
 #fin Algoritmo de Bresenham para la recta
+
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
 def plotpoint((x0,y0),(x,y),pantalla,res):
