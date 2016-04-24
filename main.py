@@ -474,16 +474,31 @@ def main():
         blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (0,0,0))
         point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
         keys = pygame.key.get_pressed()
+
         for event in events:
+
             if event.type  == pygame.QUIT:
                 terminar=True
-            if keys[pygame.K_SPACE]:
-                bala = Bullet('images/bala.png',magician.getPos())
-                bala.setDir(magician.getDir())
-                bala.setPos([magician.getPos()[0] + 10 , magician.getPos()[1] + 10])
-                ls_balaj.add(bala)
-                ls_todos.add(bala)
-                disparo = True
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+
+                    bala = Bullet('images/bala.png',magician.getPos())#la posicion inicial depende de objeto que este disparando
+                    dir = magician.getDir()
+                    bala.setDir(dir)
+
+                    if(dir == 0):#derecha
+                        bala.setPos([magician.getPos()[0] + magician.getRect()[2]/2,magician.getPos()[1]])
+                    if(dir == 1):#izquierda
+                        bala.setPos([magician.getPos()[0] - magician.getRect()[2]/2,magician.getPos()[1]])
+                    if(dir == 2):#arriba
+                        bala.setPos([magician.getPos()[0],magician.getPos()[1] - magician.getRect()[3]])
+                    if(dir == 3):#abajo
+                        bala.setPos([magician.getPos()[0],magician.getPos()[1] + magician.getRect()[3]])
+
+                    ls_balaj.add(bala)
+                    ls_todos.add(bala)
+                    disparo = True
 
 
         if keys[pygame.K_a]:
@@ -525,24 +540,6 @@ def main():
             for e in ls_enemigos:
                 #e.move(magician.getPos()) #se mueve hacia el jugador
                 e.moveLeft()
-
-        if keys[pygame.K_SPACE]:
-            bala = Bullet('images/bala.png',magician.getPos())#la posicion inicial depende de objeto que este disparando
-            dir = magician.getDir()
-            bala.setDir(dir)
-
-            if(dir == 0):#derecha
-                bala.setPos([magician.getPos()[0] + magician.getRect()[2]/2,magician.getPos()[1]])
-            if(dir == 1):#izquierda
-                bala.setPos([magician.getPos()[0] - magician.getRect()[2]/2,magician.getPos()[1]])
-            if(dir == 2):#arriba
-                bala.setPos([magician.getPos()[0],magician.getPos()[1] - magician.getRect()[3]])
-            if(dir == 3):#abajo
-                bala.setPos([magician.getPos()[0],magician.getPos()[1] + magician.getRect()[3]])
-
-            ls_balaj.add(bala)
-            ls_todos.add(bala)
-            disparo = True
 
         if keys[pygame.K_ESCAPE]:
             terminar = True
