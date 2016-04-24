@@ -76,14 +76,14 @@ def game(ANCHO,ALTO):
         blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (0,0,0))
         pantalla.blit(blood, (0, ALTO))
         point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
-        pantalla.fill(pygame.Color("white")) 
+        pantalla.fill(pygame.Color("white"))
 
         keys = pygame.key.get_pressed()
 
         for event in events:
 
             if event.type  == pygame.QUIT:
-                terminar=True
+                terminar = True
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -178,7 +178,7 @@ def game(ANCHO,ALTO):
 			for impacto in ls_impactos:
 				ls_balaj.remove(b)
 				ls_todos.remove(b)
-				magician.setScore(1)
+				magician.setScore(10)
 
 
         for enemigo in ls_enemigos:
