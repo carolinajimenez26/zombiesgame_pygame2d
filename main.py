@@ -1,11 +1,21 @@
 import pygame
 import random
+import time
 import sys
 import os
+
 curdir = os.getcwd()+"/sources"
 
 blanco=(255,255,255)
 rojo=(255,0,0)
+
+def checkCollision(sprite1, sprite2):
+    col = pygame.sprite.collide_rect(sprite1, sprite2)
+    if col == True:
+        return True
+    else:
+        return False
+
 #Algoritmo de Bresenham para la recta
 def Bresenhamecta((x0,y0),(x1,y1)):
     dx=x1-x0
@@ -121,11 +131,8 @@ class Enemigo(pygame.sprite.Sprite):
         self.jugador = (0,0)
         self.cont=0
         self.puntos=[]
-    def update(self):
-        self.puntos=Bresenhamecta((self.rect.x,self.rect.y),self.jugador)
-        if(self.cont <= len(self.puntos)-2):
-            self.rect.x,self.rect.y=self.puntos[self.cont]
-            self.cont+=self.cont
+    #def update(self):
+
 
 
 class Boss(Enemigo):
@@ -167,11 +174,44 @@ class Jugador(pygame.sprite.Sprite):
         self.imagena = []
         self.rect = self.image.get_rect()
         self.vida = 100
-        self.speed = 5
+        self.speed = 1
+        self.score = 0
         self.dir=0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
         self.score=0
+        self.ventana=(0,0)
+        self.enemigos=None
     def chocar(self):
         self.vida-=10
+    def movderecha(self):
+        for ene in self.enemigos:
+            ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
+            if(not(len(ls_impactos) != 0)):
+                if(self.rect.x+self.speed < self.ventana[0]-self.rect[2]):
+                    #time.sleep(0.01)
+                    self.rect.x+=self.speed
+    def movizquierda(self):
+        for ene in self.enemigos:
+            ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
+            if(not(len(ls_impactos) != 0)):
+                if(self.rect.x+self.speed > (0)):
+                    #time.sleep(0.01)
+                    self.rect.x-=self.speed
+
+    def movarriba(self):
+        for ene in self.enemigos:
+            ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
+            if(not(len(ls_impactos) != 0)):
+                if(self.rect.y+self.speed > (0)):
+                    #time.sleep(0.01)
+                    self.rect.y-=self.speed
+    def movabajo(self):
+        for ene in self.enemigos:
+            ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
+            if(not(len(ls_impactos) != 0)):
+                if(self.rect.y+self.speed < (self.ventana[1]-self.rect[3])):
+                    #time.sleep(0.01)
+                    self.rect.y+=self.speed
+
 
 def menu(waves,dif,ANCHO,ALTO):
     pygame.init()
@@ -255,6 +295,7 @@ def main():
     jugador=Jugador('dere_1.png')
     jugador.rect.x=ANCHO/2
     jugador.rect.y=ALTO/2
+    jugador.ventana=(ANCHO,ALTO)
     jugador.imaged.append(load_image('dere_1.png',curdir,alpha=True))
     jugador.imaged.append(load_image('dere_2.png',curdir,alpha=True))
     jugador.imagenar.append(load_image('up_1.png',curdir,alpha=True))
@@ -286,42 +327,45 @@ def main():
     terminar=False
     disparo=False
     player_current=0
-
-
+    flag=False
+    cont=0
     while(not terminar):
 
         events = pygame.event.get()
         posinip=[ANCHO/2,ALTO/2]
         tipo = pygame.font.SysFont("monospace", 15)
-        blood = tipo.render(("Vida actual: " + str(jugador.vida)),1, blanco)
-        point = tipo.render(("Puntos: " + str(jugador.score)),1, blanco)
+        blood = tipo.render(("Vida actual: " + str(jugador.vida)),1, (255,0,0))
+        point = tipo.render(("Puntos: " + str(jugador.score)),1, (255,0,0))
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             player_current = (player_current+1)%len(jugador.imagei)
             jugador.image = jugador.imagei[player_current]
-            jugador.rect.x-=jugador.speed
+            jugador.enemigos=ls_enemigos
+            jugador.movizquierda()
             jugador.dir=1
 
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(jugador.imagenar)
             jugador.image = jugador.imagenar[player_current]
-            jugador.rect.y-=jugador.speed
+            jugador.enemigos=ls_enemigos
+            jugador.movarriba()
             jugador.dir=2
 
 
         if keys[pygame.K_d]:
             player_current = (player_current+1)%len(jugador.imaged)
             jugador.image = jugador.imaged[player_current]
-            if(jugador.rect.x+jugador.speed < ANCHO-jugador.rect[2]):
-                jugador.rect.x+=jugador.speed
+            jugador.enemigos=ls_enemigos
+            jugador.movderecha()
             jugador.dir=0
 
 
         if keys[pygame.K_s]:
             player_current = (player_current+1)%len(jugador.imagena)
             jugador.image = jugador.imagena[player_current]
-            jugador.rect.y+=jugador.speed
+            jugador.enemigos=ls_enemigos
+            jugador.movabajo()
             jugador.dir=3
 
         for event in events:
@@ -340,7 +384,28 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     terminar=True
 
+        for enemigo in ls_enemigos:
+            if(checkCollision(jugador,enemigo)): # si se choco
+                if(cont == 0):
+                    jugador.chocar()
+                    print jugador.vida
+                    flag=True
+        if(flag):
+            cont+=1
+        if(cont >= 8):
+            cont=0
+
+        #lista de balas
+        for b in ls_balaj:
+			ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
+			for impacto in ls_impactos:
+				ls_balaj.remove(b)
+				ls_todos.remove(b)
+				jugador.score+=1
+
         pantalla.blit(fondo,posinif)
+        pantalla.blit(blood,(0,10))
+        pantalla.blit(point,(0,20))
         ls_todos.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
