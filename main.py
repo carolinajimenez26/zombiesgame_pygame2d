@@ -301,10 +301,6 @@ def menu(ANCHO,ALTO):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     sys.exit()
-
-
-
-
         menu_d.blit(backgroundm,(0,0))
         menu_d.blit(text_sup, (ANCHO/2-180, 30))
         menu_d.blit(ad1, (ANCHO/2-50, ALTO/2))
