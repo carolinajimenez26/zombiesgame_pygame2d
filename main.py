@@ -189,6 +189,8 @@ class Jugador(pygame.sprite.Sprite):
                 if(self.rect.x+self.speed < self.ventana[0]-self.rect[2]):
                     #time.sleep(0.01)
                     self.rect.x+=self.speed
+                else:
+                    self.rect.x-=self.speed
     def movizquierda(self):
         for ene in self.enemigos:
             ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
@@ -196,6 +198,8 @@ class Jugador(pygame.sprite.Sprite):
                 if(self.rect.x+self.speed > (0)):
                     #time.sleep(0.01)
                     self.rect.x-=self.speed
+            else:
+                self.rect.x+=self.speed
 
     def movarriba(self):
         for ene in self.enemigos:
@@ -204,6 +208,8 @@ class Jugador(pygame.sprite.Sprite):
                 if(self.rect.y+self.speed > (0)):
                     #time.sleep(0.01)
                     self.rect.y-=self.speed
+            else:
+                self.rect.y+=self.speed
     def movabajo(self):
         for ene in self.enemigos:
             ls_impactos = pygame.sprite.spritecollide(self, self.enemigos, False)
@@ -211,6 +217,8 @@ class Jugador(pygame.sprite.Sprite):
                 if(self.rect.y+self.speed < (self.ventana[1]-self.rect[3])):
                     #time.sleep(0.01)
                     self.rect.y+=self.speed
+            else:
+                self.rect.y-=self.speed
 
 
 def menu(waves,dif,ANCHO,ALTO):
@@ -279,7 +287,10 @@ def main():
     pygame.init()
     pantalla=pygame.display.set_mode([ANCHO,ALTO])
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
-    pantalla.fill(blanco)
+    tipo = pygame.font.SysFont("monospace", 15)
+    pantalla.fill((0,0,0))
+
+
     #Fin de inicializacion de pantalla
 
     #Cargando imagenes
@@ -318,6 +329,7 @@ def main():
     fondo=load_image('background.jpg',curdir, alpha=False)
 
     pantalla.blit(fondo,posinif)
+    splash = False
     ls_todos.draw(pantalla)
     ls_enemigos.draw(pantalla)
 
