@@ -122,6 +122,25 @@ def load_image(nombre_a, dir_img, alpha=False):
         image = image.convert()
     return image
 
+#Funcion para determianr si el usuario tiene el mouse encima de lso botones
+def pres_boton(button_x,button_y,sprite):
+    x_len = sprite.get_width()
+    y_len = sprite.get_height()
+    mos_x, mos_y = pygame.mouse.get_pos()
+    if mos_x>button_x and (mos_x<button_x+x_len):
+        x_inside = True
+    else:
+        x_inside = False
+    if mos_y>button_y and (mos_y<button_y+y_len):
+        y_inside = True
+    else:
+        y_inside = False
+    if x_inside and y_inside:
+        return True
+    else:
+        return False
+
+#FIn funcion para
 class Enemigo(pygame.sprite.Sprite):
     def __init__(self,imagen):
         pygame.sprite.Sprite.__init__(self)
@@ -221,67 +240,84 @@ class Jugador(pygame.sprite.Sprite):
                 self.rect.y-=self.speed
 
 
-def menu(waves,dif,ANCHO,ALTO):
+def menu(ANCHO,ALTO):
     pygame.init()
-    tipo = pygame.font.SysFont("monospace", 13)
+
     menu_d=pygame.display.set_mode((ANCHO, ALTO), pygame.FULLSCREEN)
     backgroundm=load_image('backgroundm.jpg',curdir,alpha=False)
-    ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, blanco)
-    ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, blanco)
-    ad3 = tipo.render("Escape para salir",1, blanco)
+    ad1 = load_image('btn1.png', curdir, alpha=False)
+    ad2 = load_image('btn3.png', curdir, alpha=False)
+    ad3 = load_image('btn2.png', curdir, alpha=False)
     s_fondo=load_sound('fondo1.sf',curdir)
     s_fondo.play()
+    rect = ad1.get_rect()
+    button_x = ANCHO/2-50
+    button_y = ALTO/2
+    rect2 = ad2.get_rect()
     menu_d.blit(backgroundm,(0,0))
-    menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
-    menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
-    menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
+    menu_d.blit(ad1, (ANCHO/2, ALTO/2))
+    menu_d.blit(ad2, (ANCHO/2, (ALTO/2)+50))
+    menu_d.blit(ad3, (ANCHO/2, (ALTO/2)+100))
 
     pygame.display.flip()
 
     terminar=False
-    max_waves=False
-    min_waves=False
+
 
     while(not terminar):
-        ad1 = tipo.render(("Presiona +/- para manejar las oleadas por nivel" + " Oleadas: " + str(waves)),1, blanco)
-        ad2 = tipo.render(("Presiona d/r para manejar la dificultad" + " Dificultad: " + str(dif)),1, blanco)
+        ad1 = load_image('btn1.png', curdir, alpha=False)
+        ad2 = load_image('btn3.png', curdir, alpha=False)
+        ad3 = load_image('btn2.png', curdir, alpha=False)
+        # initialize font; must be called after 'pygame.init()' to avoid 'Font not Initialized' error
+        tipo_t = pygame.font.SysFont("comicsansms", 30)
+        # render text
+        text_sup = tipo_t.render("Magician-Zombie v0.1 - [Juan Diego H - Carolina J]", 1, (255,255,255))
+
+        mouse_pos=pygame.mouse.get_pos()
         events = pygame.event.get()
 
+        if(pres_boton(ANCHO/2,ALTO/2,ad1)):
+            ad1 = load_image('btn1_p.png', curdir, alpha=False)
+
+        if(pres_boton(ANCHO/2,(ALTO/2)+50,ad2)):
+            ad2 = load_image('btn3_p.png', curdir, alpha=False)
+
+        if(pres_boton(ANCHO/2,(ALTO/2)+100,ad3)):
+            ad3 = load_image('btn2_p.png', curdir, alpha=False)
+
+
         for event in events:
-            if event.type == pygame.K_SPACE or event.type == pygame.QUIT:
-                terminar=True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_KP_PLUS:
-                    if(not waves>=10):
-                        waves+=1
-                if event.key == pygame.K_KP_MINUS:
-                    if(not waves<=5):
-                        waves-=1
-                if event.key == pygame.K_d:
-                    if(not dif>=3):
-                        dif+=1
-                if event.key == pygame.K_r:
-                    if(not dif <= 1):
-                        dif-=1
-                if event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if(pres_boton(ANCHO/2,ALTO/2,ad1)):
                     terminar=True
+                if(pres_boton(ANCHO/2,ALTO/2+50,ad2)):
+                    sys.exit()
+                if(pres_boton(ANCHO/2,ALTO/2+100,ad3)):
+                    print "Creditos"
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sys.exit()
+
+
 
 
         menu_d.blit(backgroundm,(0,0))
-        menu_d.blit(ad1, (ANCHO/2-ANCHO/4, ALTO/2))
-        menu_d.blit(ad2, (ANCHO/2-ANCHO/4, (ALTO/2)+30))
-        menu_d.blit(ad3, (ANCHO/2-ANCHO/4, (ALTO/2)+60))
+        menu_d.blit(text_sup, (ANCHO/2-180, 30))
+        menu_d.blit(ad1, (ANCHO/2-50, ALTO/2))
+        menu_d.blit(ad2, (ANCHO/2-50, (ALTO/2)+50))
+        menu_d.blit(ad3, (ANCHO/2-50, (ALTO/2)+100))
         pygame.display.flip()
 
     s_fondo.stop()
-    return waves,dif
 
 def main():
     ANCHO = 800
     ALTO = 600
-    """waves=5
-    dificultad=1
-    waves,dificultad = menu(waves,dificultad,ANCHO,ALTO)"""
+    menu(ANCHO,ALTO)
 
     #Inicializacion de pantalla
     pygame.init()
