@@ -1,223 +1,11 @@
-from func import *
-
-
-class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
-    def __init__(self, img_name, pos, w, h):
-    	pygame.sprite.Sprite.__init__(self)
-    	self.image = load_image(img_name, curdir, alpha=True)
-    	self.rect = self.image.get_rect()
-    	self.pos = pos
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-        self.jugador = (0,0)
-        self.direccion = 0
-        self.WIDTH = w
-        self.HIGH = h
-
-    def getDir(self):
-        return self.direccion
-
-    def setDir(self, dir):
-        self.direccion = dir
-
-    def getRect(self):
-    	return self.rect
-
-    def getPos(self):
-    	return [self.rect.x,self.rect.y]
-
-    def setPos(self,pos):
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-
-    def moveLeft(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(x - increment_x >= 0):
-            self.setPos([x - increment_x,y])
-            self.dir = 1
-
-    def moveRight(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(x + increment_x < self.WIDHT - self.rect[2]):
-            self.setPos([x + increment_x,y])
-            self.dir = 0
-
-    def moveUp(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(y + increment_y >= 0):
-            self.setPos([x,y - increment_y])
-            self.dir = 2
-
-    def moveDown(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(y + increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
-            self.setPos([x,y + increment_y])
-            self.dir = 3
-
-
-
-class Zombie(Enemy):#Hereda de la clase Enemigo
-    def __init__(self, img_name, pos, w, h):
-        Enemy.__init__(self, img_name, pos, w, h)
-
-    def move(self, pos): #recibe la posicion actual del jugador
-        print "move"
-        moves = Bresenhamrecta([self.getPos(),pos],self)
-        for i in range(0,len(moves)):
-            self.setPos(moves[i])
-            print (moves[i])
-            pygame.display.flip()
-            #self.moveLeft()
-        print "end"
-
-    def update(self):
-        pass
-
-class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
-    def __init__(self, img_name, pos,w, h):
-    	pygame.sprite.Sprite.__init__(self)
-    	self.image = load_image(img_name, curdir, alpha=True)
-    	self.rect = self.image.get_rect()
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-    	self.life = 5
-        self.score = 0
-        self.dir = 0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
-        #imagenes para movimiento
-        self.imaged = [] #derecha
-        self.imagei = [] #izquierda
-        self.imagenar = [] #arriba
-        self.imagena = [] #abajo
-        self.enemigos=0
-        self.WIDTH = w
-        self.HIGH = h
-
-    def getScore(self):
-        return self.score
-
-    def setScore(self, score):
-        self.score += score
-
-    def getRect(self):
-    	return self.rect
-
-    def getPos(self):
-    	return [self.rect.x,self.rect.y]
-
-    def setPos(self,pos):
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-
-    def moveLeft(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(x - increment_x >= 0):
-            self.setPos([x - increment_x,y])
-            self.dir = 1
-
-    def moveRight(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(x + increment_x < self.WIDTH - self.rect[2]):
-            self.setPos([x + increment_x,y])
-            self.dir = 0
-
-    def moveUp(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(y + increment_y >= 0):
-            self.setPos([x,y - increment_y])
-            self.dir = 2
-
-    def moveDown(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
-        x = self.getPos()[0]
-        y = self.getPos()[1]
-        if(y + increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
-            self.setPos([x,y + increment_y])
-            self.dir = 3
-
-    def getLife(self):
-    	return self.life
-
-    def setLife(self,life):
-    	self.life = life
-
-    def crash(self):
-        self.setLife(self.getLife() - 1) #quita una vida
-
-    def getDir(self):
-        return self.dir
-
-    def setDir(self,dir):
-        self.dir = dir
-
-class Magician(Player): #Hereda de la clase Player
-    def __init__(self, img_name, pos, w, h):
-        Player.__init__(self, img_name, pos, w, h)
-
-class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
-    def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
-    	pygame.sprite.Sprite.__init__(self)
-    	self.image = load_image(img_name, curdir, alpha=True)
-    	self.rect = self.image.get_rect()
-    	self.pos = pos
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-        self.speed = 5
-        self.magiciandir = 0 #dispara dependiendo de la posicion del magician
-
-    def getRect(self):
-    	return self.rect
-
-    def getPos(self):
-    	return [self.rect.x,self.rect.y]
-
-    def setPos(self,pos):
-    	self.rect.x = pos[0]
-    	self.rect.y = pos[1]
-
-    def setDir(self,dir):
-        self.magiciandir = dir
-
-    def getDir(self):
-        return self.magiciandir
-
-    def update(self):
-        if(self.magiciandir == 0): #derecha
-            self.rect.x += self.speed
-        if(self.magiciandir == 1):#izquierda
-            self.rect.x -= self.speed
-        if(self.magiciandir == 2):#arriba
-            self.rect.y -= self.speed
-        if(self.magiciandir == 3):#abajo
-            self.rect.y += self.speed
+from objects import *
 
 
 def game(ANCHO,ALTO):
 
     #Inicializacion de pantalla
     pygame.init()
-    pantalla = pygame.display.set_mode([ANCHO,ALTO])
+    pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
     pantalla.fill((0,0,0))
@@ -226,19 +14,19 @@ def game(ANCHO,ALTO):
     #Fin de inicializacion de pantalla
 
     #Cargando imagenes
-    posinif=[0,0]
+    posinif = [0,0]
 
     #Grupos de sprites
-    ls_todos=pygame.sprite.Group()
-    ls_balaj=pygame.sprite.Group()
-    ls_enemigos=pygame.sprite.Group()
-    ls_balase=pygame.sprite.Group()
-    ls_jugadores=pygame.sprite.Group()
+    ls_todos = pygame.sprite.Group()
+    ls_balaj = pygame.sprite.Group()
+    ls_enemigos = pygame.sprite.Group()
+    ls_balase = pygame.sprite.Group()
+    ls_jugadores = pygame.sprite.Group()
 
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
-    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
+    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO - 50)
     middle = [(ANCHO / 2) - (magician.getRect()[2] / 2), (ALTO / 2) - (magician.getRect()[3] / 2)]
     magician.setPos(middle) #posiciona el magician en la mitad de la pantalla
 
@@ -258,13 +46,15 @@ def game(ANCHO,ALTO):
     #----------------ENEMIGOS-------------------------
     #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
     for i in range(0,5):
-        enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO)
+        enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
         ls_enemigos.add(enemy)
         ls_todos.add(enemy)
-        enemy.setPos([random.randrange(ANCHO - 20),random.randrange(ALTO - 20)])
+        enemy.setPos([random.randrange(ANCHO),random.randrange(ALTO - 50)])
 
 
     fondo = load_image('background.jpg',curdir, alpha=False)
+    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+    pantalla.fill(blanco)
 
     pantalla.blit(fondo,posinif)
     splash = False
@@ -323,7 +113,7 @@ def game(ANCHO,ALTO):
 
             for e in ls_enemigos:
                 #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveLeft()
+                e.moveUp()
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -333,7 +123,7 @@ def game(ANCHO,ALTO):
 
             for e in ls_enemigos:
                 #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveLeft()
+                e.moveUp()
 
         if keys[pygame.K_d]:
             player_current = (player_current+1)%len(magician.imaged)
@@ -343,7 +133,7 @@ def game(ANCHO,ALTO):
 
             for e in ls_enemigos:
                 #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveLeft()
+                e.moveUp()
 
         if keys[pygame.K_s]:
             player_current = (player_current+1)%len(magician.imagena)
@@ -353,15 +143,15 @@ def game(ANCHO,ALTO):
 
             for e in ls_enemigos:
                 #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveLeft()
+                e.moveUp()
 
         if keys[pygame.K_ESCAPE]:
             terminar = True
 
 
         pantalla.blit(fondo,[0,0])
-        pantalla.blit(blood,[0,10])
-        pantalla.blit(point,[0,25])
+        pantalla.blit(blood,[0,ALTO])
+        pantalla.blit(point,[0,ALTO + 15])
         ls_todos.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
