@@ -375,6 +375,8 @@ def game(ANCHO,ALTO):
                     magician.crash()
                     print magician.getLife()
                     flag=True
+                    if(magician.getLife() == 0): #vuelve al menu ppal
+                        terminar = True
         if(flag):
             cont+=1
         if(cont >= 8):
@@ -392,6 +394,8 @@ def game(ANCHO,ALTO):
             enemigo.jugador = magician.getPos()
 
         magician.mov=0
+
+    return 0
 
 if __name__ == "__main__":
     main()
