@@ -9,6 +9,7 @@ HIGH = 400
 WIDTH = 700
 WHITE = (255,255,255)
 
+aux = True #para que corte el ciclo del Bresenham
 
 def checkCollision(sprite1, sprite2):
     col = pygame.sprite.collide_rect(sprite1, sprite2)
@@ -19,7 +20,14 @@ def checkCollision(sprite1, sprite2):
 
 
 #Algoritmo de Bresenham para la recta
-def Bresenhamrecta((x0,y0),(x1,y1)):
+def Bresenhamrecta(p,obj):
+    x0 = p[0][0]
+    y0 = p[0][1]
+    x1 = p[1][0]
+    y1 = p[1][1]
+    x = 0
+    y = 0
+    print p
     dx=x1-x0
     dy=y1-y0
     res=[]
@@ -35,31 +43,34 @@ def Bresenhamrecta((x0,y0),(x1,y1)):
         stepx=1
         x=x0
         y=y0
-    res.append((x,y))
+
     if(dx>dy):
         p=2*dy-dx
         incE=2*dy
         incNE=2*(dy-dx)
-        while(x != x1):
+        while(x != x1 and aux):
             x=x+stepx
             if(p<0):
                 p=p+incE
             else:
                 y=y+stepy
                 p=p+incNE
-        res.append((x,y))
+        res.append([x,y])
+        #obj.setPos([x,y])
     else:
         p=2*dx-dy
         incE=2*dx
         incNE=2*(dx-dy)
-        while(y != y1):
+        while(y != y1 and aux):
+            print "bres"
             y=y+stepy
             if(p<0):
                 p=p+incE
             else:
                 x=x+stepx
                 p=p+incNE
-        res.append((x,y))
+        res.append([x,y])
+    #obj.setPos([x,y])
     return res
 #fin Algoritmo de Bresenham para la recta
 
@@ -147,24 +158,58 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.y = pos[1]
 
     def moveLeft(self):
-        self.setPos([self.getPos()[0] - 5,self.getPos()[1]])
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x - increment_x >= 0):
+            self.setPos([x - increment_x,y])
+            self.dir = 1
 
     def moveRight(self):
-        self.setPos([self.getPos()[0] + 5,self.getPos()[1]])
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x + increment_x < WIDTH - self.rect[2]):
+            self.setPos([x + increment_x,y])
+            self.dir = 0
 
     def moveUp(self):
-        self.setPos([self.getPos()[0],self.getPos()[1] - 5])
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y >= 0):
+            self.setPos([x,y - increment_y])
+            self.dir = 2
 
     def moveDown(self):
-        self.setPos([self.getPos()[0],self.getPos()[1] + 5])
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y < HIGH - self.rect[3]): # si no se pasa de la pantalla
+            self.setPos([x,y + increment_y])
+            self.dir = 3
+
 
 
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos):
         Enemy.__init__(self, img_name, pos)
 
+    def move(self, pos): #recibe la posicion actual del jugador
+        print "move"
+        moves = Bresenhamrecta([self.getPos(),pos],self)
+        for i in range(0,len(moves)):
+            self.setPos(moves[i])
+            print (moves[i])
+            pygame.display.flip()
+            #self.moveLeft()
+        print "end"
+
     def update(self):
-        #movimiento = Bresenhamrecta(self.getPos(),self.jugador)
         pass
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
@@ -447,6 +492,9 @@ def main():
             magician.moveLeft()
             magician.setDir(1)
 
+            for e in ls_enemigos:
+                #e.move(magician.getPos()) #se mueve hacia el jugador
+                e.moveLeft()
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -454,17 +502,29 @@ def main():
             magician.moveUp()
             magician.setDir(2)
 
+            for e in ls_enemigos:
+                #e.move(magician.getPos()) #se mueve hacia el jugador
+                e.moveLeft()
+
         if keys[pygame.K_d]:
             player_current = (player_current+1)%len(magician.imaged)
             magician.image = magician.imaged[player_current]
             magician.moveRight()
             magician.setDir(0)
 
+            for e in ls_enemigos:
+                #e.move(magician.getPos()) #se mueve hacia el jugador
+                e.moveLeft()
+
         if keys[pygame.K_s]:
             player_current = (player_current+1)%len(magician.imagena)
             magician.image = magician.imagena[player_current]
             magician.moveDown()
             magician.setDir(3)
+
+            for e in ls_enemigos:
+                #e.move(magician.getPos()) #se mueve hacia el jugador
+                e.moveLeft()
 
         if keys[pygame.K_SPACE]:
             bala = Bullet('images/bala.png',magician.getPos())#la posicion inicial depende de objeto que este disparando
