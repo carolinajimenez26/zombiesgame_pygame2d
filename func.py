@@ -1,6 +1,6 @@
 from imports import *
 
-def oleadax(cant,oleada):
+"""def oleadax(cant,oleada):
     #----------------ENEMIGOS-------------------------
     #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
     for i in range(0,cant):
@@ -9,7 +9,7 @@ def oleadax(cant,oleada):
             ls_enemigos.add(enemy)
             ls_todos.add(enemy)
             enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
-            enemy.restartMovements(magician.getPos())
+            enemy.restartMovements(magician.getPos())"""
 
 def checkCollision(sprite1, sprite2):
     col = pygame.sprite.collide_rect(sprite1, sprite2)
