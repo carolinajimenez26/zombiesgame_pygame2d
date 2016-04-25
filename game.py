@@ -1,5 +1,5 @@
 from objects import *
-
+from loser import game_over
 
 def game(ANCHO,ALTO):
 
@@ -51,7 +51,7 @@ def game(ANCHO,ALTO):
 
 
     fondo = load_image('background.jpg',curdir, alpha=False)
-    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
     pantalla.fill(blanco)
 
     pantalla.blit(fondo,posinif)
@@ -73,10 +73,14 @@ def game(ANCHO,ALTO):
         events = pygame.event.get()
 
         tipo = pygame.font.SysFont("monospace", 15)
-        blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (0,0,0))
+        blood = tipo.render("Vida actual: " ,1, (255,0,0))
         pantalla.blit(blood, (0, ALTO))
         point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
-        pantalla.fill(pygame.Color("white"))
+
+        if(magician.getLife() > 0):
+            point = tipo.render(("Puntos: " + str(magician.getScore())),1, (255,0,0))
+
+        pantalla.fill(pygame.Color(0,0,0))
 
         keys = pygame.key.get_pressed()
 
@@ -152,8 +156,8 @@ def game(ANCHO,ALTO):
 
         pantalla.blit(fondo,[0,0])
         pantalla.blit(blood,[0,ALTO])
-        pantalla.blit(point,[0,ALTO + 15])
-        lifebars(magician,pantalla,[ANCHO/2,ALTO+10])
+        pantalla.blit(point,[300,ALTO + 15])
+        lifebars(magician,pantalla,[120,ALTO+18])
         ls_todos.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
@@ -168,8 +172,9 @@ def game(ANCHO,ALTO):
                     lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
                     print magician.getLife()
                     flag = True
-                    if(magician.getLife() == 0): #vuelve al menu ppal
+                    if(magician.getLife() <= 0): #vuelve al menu ppal
                         terminar = True
+                        game_over(ANCHO,ALTO)
         if(flag):
             cont+=1
         if(cont >= 8):
@@ -189,6 +194,3 @@ def game(ANCHO,ALTO):
         magician.mov=0
 
     return 0
-
-if __name__ == "__main__":
-    main()

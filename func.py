@@ -9,6 +9,21 @@ def checkCollision(sprite1, sprite2):
     else:
         return False
 
+def cargar_fondo(archivo, ancho, alto):
+     imagen = pygame.image.load(archivo).convert_alpha()
+    imagen_ancho, imagen_alto = imagen.get_size()
+    #print 'ancho: ', imagen_ancho, ' xmax: ', imagen_ancho/ancho
+    #print 'alto: ',imagen_alto, ' ymax: ', imagen_alto/alto
+    tabla_fondos = []
+
+    for fondo_x in range(0, imagen_ancho/ancho):
+       linea = []
+       tabla_fondos.append(linea)
+       for fondo_y in range(0, imagen_alto/alto):
+            cuadro = (fondo_x * ancho, fondo_y * alto, ancho, alto)
+            linea.append(imagen.subsurface(cuadro))
+    return tabla_fondos
+
 #Algoritmo de Bresenham para la recta
 def Bresenhamrecta(p,obj):
     x0 = p[0][0]
