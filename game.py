@@ -7,6 +7,8 @@ def game(ANCHO,ALTO):
     pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
+    pantalla_s=load_sound('background.ogg',curdir)
+    shot_s=load_sound('shot.wav',curdir)
     pantalla.fill((0,0,0))
     #Fin de inicializacion de pantalla
 
@@ -23,7 +25,7 @@ def game(ANCHO,ALTO):
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
-    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO - 50)
+    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
     middle = [(ANCHO / 2) - (magician.getRect()[2] / 2), (ALTO / 2) - (magician.getRect()[3] / 2)]
     magician.setPos(middle) #posiciona el magician en la mitad de la pantalla
 
@@ -67,13 +69,13 @@ def game(ANCHO,ALTO):
     player_current = 0
     flag = False
     cont = 0
-
+    pantalla_s.play()
     while(not terminar):
         if(magician.getLife() <= 0): #vuelve al menu ppal
+            pantalla_s.stop()
             reloj.tick(0.3)
             game_over(ANCHO,ALTO)
             terminar=True
-            print "yiyi"
         events = pygame.event.get()
 
         tipo = pygame.font.SysFont("monospace", 15)
@@ -91,6 +93,7 @@ def game(ANCHO,ALTO):
         for event in events:
 
             if event.type  == pygame.QUIT:
+                pantalla_s.stop()
                 terminar = True
 
             if event.type == pygame.KEYDOWN:
@@ -99,7 +102,7 @@ def game(ANCHO,ALTO):
                     bala = Bullet('bala.png',magician.getPos())#la posicion inicial depende de objeto que este disparando
                     dir = magician.getDir()
                     bala.setDir(dir)
-
+                    shot_s.play()
                     if(dir == 0):#derecha
                         bala.setPos([magician.getPos()[0] + magician.getRect()[2]/2,magician.getPos()[1]])
                     if(dir == 1):#izquierda
@@ -151,6 +154,7 @@ def game(ANCHO,ALTO):
                 e.restartMovements(magician.getPos())
 
         if keys[pygame.K_ESCAPE]:
+            pantalla_s.stop()
             terminar = True
 
 
@@ -172,9 +176,7 @@ def game(ANCHO,ALTO):
                     lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
                     print magician.getLife()
                     flag = True
-                    if(magician.getLife() <= 0): #vuelve al menu ppal
-                        terminar = True
-                        game_over(ANCHO,ALTO)
+
         if(flag):
             cont+=1
         if(cont >= 8):
