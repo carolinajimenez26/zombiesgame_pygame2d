@@ -48,7 +48,7 @@ def game(ANCHO,ALTO):
         ls_enemigos.add(enemy)
         ls_todos.add(enemy)
         enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
-
+        enemy.restartMovements(magician.getPos())
 
     fondo = load_image('background.jpg',curdir, alpha=False)
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
@@ -117,8 +117,7 @@ def game(ANCHO,ALTO):
             magician.setDir(1)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -127,8 +126,7 @@ def game(ANCHO,ALTO):
             magician.setDir(2)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_d]:
             player_current = (player_current+1)%len(magician.imaged)
@@ -137,8 +135,7 @@ def game(ANCHO,ALTO):
             magician.setDir(0)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_s]:
             player_current = (player_current+1)%len(magician.imagena)
@@ -147,8 +144,7 @@ def game(ANCHO,ALTO):
             magician.setDir(3)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_ESCAPE]:
             terminar = True

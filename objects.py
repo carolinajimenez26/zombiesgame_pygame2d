@@ -67,23 +67,20 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
             self.dir = 3
 
 
-
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos, w, h):
         Enemy.__init__(self, img_name, pos, w, h)
+        self.moves = [0 for x in range(w*h)] #movimientos que debe realizar
+        self.i = 0
 
-    def move(self, pos): #recibe la posicion actual del jugador
-        print "move"
-        moves = Bresenhamrecta([self.getPos(),pos],self)
-        for i in range(0,len(moves)):
-            self.setPos(moves[i])
-            print (moves[i])
-            pygame.display.flip()
-            #self.moveLeft()
-        print "end"
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
 
-    def update(self):
-        pass
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos,w, h):
