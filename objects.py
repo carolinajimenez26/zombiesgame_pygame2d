@@ -53,7 +53,7 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
         increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y >= 0):
+        if(y + increment_y >= 10):
             self.setPos([x,y - increment_y])
             self.dir = 2
 
@@ -143,7 +143,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y >= 0):
+        if(y + increment_y >= 10):
             self.setPos([x,y - increment_y])
             self.dir = 2
 

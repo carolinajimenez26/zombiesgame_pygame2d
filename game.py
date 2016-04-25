@@ -24,7 +24,7 @@ def game(ANCHO,ALTO):
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
-    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO - 50)
+    magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
     middle = [(ANCHO / 2) - (magician.getRect()[2] / 2), (ALTO / 2) - (magician.getRect()[3] / 2)]
     magician.setPos(middle) #posiciona el magician en la mitad de la pantalla
 
@@ -47,7 +47,7 @@ def game(ANCHO,ALTO):
         enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
         ls_enemigos.add(enemy)
         ls_todos.add(enemy)
-        enemy.setPos([random.randrange(ANCHO),random.randrange(ALTO - 50)])
+        enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
 
 
     fondo = load_image('background.jpg',curdir, alpha=False)
@@ -153,6 +153,7 @@ def game(ANCHO,ALTO):
         pantalla.blit(fondo,[0,0])
         pantalla.blit(blood,[0,ALTO])
         pantalla.blit(point,[0,ALTO + 15])
+        lifebars(magician,pantalla,[ANCHO/2,ALTO+10])
         ls_todos.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
@@ -164,8 +165,9 @@ def game(ANCHO,ALTO):
             if(checkCollision(magician,enemigo)): # si se choco
                 if(cont == 0):
                     magician.crash()
+                    lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
                     print magician.getLife()
-                    flag=True
+                    flag = True
                     if(magician.getLife() == 0): #vuelve al menu ppal
                         terminar = True
         if(flag):
