@@ -60,6 +60,7 @@ def main():
                         #pygame.display.quit()
                         s_fondo.stop()
                         g = game(ANCHO,ALTO)#inicia el juego
+        
 
                     if(pres_boton(ANCHO/2,ALTO/2+50,ad2)):
                         sys.exit()#se sale del juego
