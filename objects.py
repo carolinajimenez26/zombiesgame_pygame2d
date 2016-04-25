@@ -120,6 +120,9 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
 
+    def getMargen(self):
+        return (self.rect[2],self.rect[3])
+        
     def moveLeft(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5

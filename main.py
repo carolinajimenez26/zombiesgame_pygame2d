@@ -11,6 +11,7 @@ def main():
         ad1 = load_image('btn1.png', curdir, alpha=False)
         ad2 = load_image('btn3.png', curdir, alpha=False)
         ad3 = load_image('btn2.png', curdir, alpha=False)
+
         s_fondo = load_sound('fondo1.sf',curdir)
         s_fondo.play()
         rect = ad1.get_rect()
@@ -60,7 +61,7 @@ def main():
                         #pygame.display.quit()
                         s_fondo.stop()
                         g = game(ANCHO,ALTO)#inicia el juego
-        
+
 
                     if(pres_boton(ANCHO/2,ALTO/2+50,ad2)):
                         sys.exit()#se sale del juego
