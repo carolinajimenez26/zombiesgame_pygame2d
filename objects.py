@@ -53,7 +53,7 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
         increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y >= 0):
+        if(y + increment_y >= 10):
             self.setPos([x,y - increment_y])
             self.dir = 2
 
@@ -67,23 +67,20 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
             self.dir = 3
 
 
-
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos, w, h):
         Enemy.__init__(self, img_name, pos, w, h)
+        self.moves = [0 for x in range(w*h)] #movimientos que debe realizar
+        self.i = 0
 
-    def move(self, pos): #recibe la posicion actual del jugador
-        print "move"
-        moves = Bresenhamrecta([self.getPos(),pos],self)
-        for i in range(0,len(moves)):
-            self.setPos(moves[i])
-            print (moves[i])
-            pygame.display.flip()
-            #self.moveLeft()
-        print "end"
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
 
-    def update(self):
-        pass
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
 
 class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos,w, h):
@@ -120,9 +117,6 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
 
-    def getMargen(self):
-        return (self.rect[2],self.rect[3])
-        
     def moveLeft(self):
         increment_x = self.getRect()[2] / 5
         increment_y = self.getRect()[3] / 5
@@ -146,7 +140,7 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y >= 0):
+        if(y + increment_y >= 10):
             self.setPos([x,y - increment_y])
             self.dir = 2
 

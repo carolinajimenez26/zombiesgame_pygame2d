@@ -1,4 +1,5 @@
 from game import *
+from info import info
 
 def main():
 

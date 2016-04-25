@@ -1,6 +1,11 @@
 from imports import *
 
-aux = True
+def checkCollision(sprite1, sprite2):
+    col = pygame.sprite.collide_rect(sprite1, sprite2)
+    if col == True:
+        return True
+    else:
+        return False
 
 def cargar_fondo(archivo, ancho, alto):
     imagen = pygame.image.load(archivo).convert_alpha()
@@ -17,67 +22,59 @@ def cargar_fondo(archivo, ancho, alto):
             linea.append(imagen.subsurface(cuadro))
     return tabla_fondos
 
-def checkCollision(sprite1, sprite2):
-    col = pygame.sprite.collide_rect(sprite1, sprite2)
-    if col == True:
-        return True
-    else:
-        return False
 
-#Algoritmo de Bresenham para la recta
-def Bresenhamrecta(p,obj):
+def Bresenhamrecta(p): #algoritmo para dibujar rectas
+
     x0 = p[0][0]
     y0 = p[0][1]
     x1 = p[1][0]
     y1 = p[1][1]
-    x = 0
-    y = 0
-    print p
-    dx=x1-x0
-    dy=y1-y0
-    res=[]
-    if(dy < 0 ):
-        dy=-1*dy
-        stepy=-1
-    else:
-        stepy=1
-    if(dx<0):
-        dx=-1*dx
-        stepx=-1
-    else:
-        stepx=1
-        x=x0
-        y=y0
+    res = []
+    dx = (x1 - x0)
+    dy = (y1 - y0)
+    #determinar que punto usar para empezar, cual para terminar
+    if (dy < 0) :
+        dy = -1*dy
+        stepy = -1
+    else :
+        stepy = 1
+    if (dx < 0) :
+        dx = -1*dx
+        stepx = -1
+    else :
+        stepx = 1
+    x = x0
+    y = y0
+    #se cicla hasta llegar al extremo de la linea
+    if(dx>dy) :
+        p = 2*dy - dx
+        incE = 2*dy
+        incNE = 2*(dy-dx)
+        while (x != x1) :
+            x = x + stepx
+            if (p < 0) :
+                p = p + incE
+            else :
+                y = y + stepy
+                p = p + incNE
+            p_new = [x, y]
+            res.append(p_new)
 
-    if(dx>dy):
-        p=2*dy-dx
-        incE=2*dy
-        incNE=2*(dy-dx)
-        while(x != x1 and aux):
-            x=x+stepx
-            if(p<0):
-                p=p+incE
-            else:
-                y=y+stepy
-                p=p+incNE
-        res.append([x,y])
-        #obj.setPos([x,y])
-    else:
-        p=2*dx-dy
-        incE=2*dx
-        incNE=2*(dx-dy)
-        while(y != y1 and aux):
-            print "bres"
-            y=y+stepy
-            if(p<0):
-                p=p+incE
-            else:
-                x=x+stepx
-                p=p+incNE
-        res.append([x,y])
-    #obj.setPos([x,y])
+    else :
+        p = 2*dx - dy
+        incE = 2*dx
+        incNE = 2*(dx-dy)
+        while (y != y1) :
+            y = y + stepy
+            if (p < 0) :
+                p = p + incE
+            else :
+                x = x + stepx
+                p = p + incNE
+
+            p_new = [x, y]
+            res.append(p_new)
     return res
-#fin Algoritmo de Bresenham para la recta
 
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
@@ -158,7 +155,6 @@ def pres_boton(button_x,button_y,sprite):
 
 #FIn funcion para determianr si el usuario tiene el mouse encima de lso botones
 
-#Crea la barra de vida
 def lifebars(player, surface, pos):
     if(player.getLife() > 75):
         color = verde

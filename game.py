@@ -46,7 +46,8 @@ def game(ANCHO,ALTO):
         enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
         ls_enemigos.add(enemy)
         ls_todos.add(enemy)
-        enemy.setPos([random.randrange(ANCHO),random.randrange(ALTO - 50)])
+        enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
+        enemy.restartMovements(magician.getPos())
 
 
     fondo = load_image('background.jpg',curdir, alpha=False)
@@ -69,16 +70,20 @@ def game(ANCHO,ALTO):
 
     while(not terminar):
         if(magician.getLife() <= 0): #vuelve al menu ppal
-            #pygame.display.quit()
+            reloj.tick(0.3)
             game_over(ANCHO,ALTO)
             terminar=True
             print "yiyi"
         events = pygame.event.get()
+
         tipo = pygame.font.SysFont("monospace", 15)
         blood = tipo.render("Vida actual: " ,1, (255,0,0))
         pantalla.blit(blood, (0, ALTO))
+        point = tipo.render(("Puntos: " + str(magician.getScore())),1, (0,0,0))
+
         if(magician.getLife() > 0):
             point = tipo.render(("Puntos: " + str(magician.getScore())),1, (255,0,0))
+
         pantalla.fill(pygame.Color(0,0,0))
 
         keys = pygame.key.get_pressed()
@@ -116,8 +121,7 @@ def game(ANCHO,ALTO):
             magician.setDir(1)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_w]:
             player_current = (player_current+1)%len(magician.imagenar)
@@ -126,8 +130,7 @@ def game(ANCHO,ALTO):
             magician.setDir(2)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_d]:
             player_current = (player_current+1)%len(magician.imaged)
@@ -136,8 +139,7 @@ def game(ANCHO,ALTO):
             magician.setDir(0)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_s]:
             player_current = (player_current+1)%len(magician.imagena)
@@ -146,12 +148,10 @@ def game(ANCHO,ALTO):
             magician.setDir(3)
 
             for e in ls_enemigos:
-                #e.move(magician.getPos()) #se mueve hacia el jugador
-                e.moveUp()
+                e.restartMovements(magician.getPos())
 
         if keys[pygame.K_ESCAPE]:
             terminar = True
-
 
 
         pantalla.blit(fondo,[0,0])
@@ -169,9 +169,12 @@ def game(ANCHO,ALTO):
             if(checkCollision(magician,enemigo)): # si se choco
                 if(cont == 0):
                     magician.crash()
+                    lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
                     print magician.getLife()
-                    flag=True
-
+                    flag = True
+                    if(magician.getLife() <= 0): #vuelve al menu ppal
+                        terminar = True
+                        game_over(ANCHO,ALTO)
         if(flag):
             cont+=1
         if(cont >= 8):
@@ -187,7 +190,6 @@ def game(ANCHO,ALTO):
 
         for enemigo in ls_enemigos:
             enemigo.jugador = magician.getPos()
-
 
         magician.mov=0
 
