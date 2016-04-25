@@ -15,4 +15,5 @@ verdefosforecente=(4,255,13)
 naranja=(252,178,81)
 negro=(0,0,0)
 cyan=(0,255,255)
+amarillo = (255,255,0)
 #Fin definicion de colores

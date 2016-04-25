@@ -157,3 +157,14 @@ def pres_boton(button_x,button_y,sprite):
         return False
 
 #FIn funcion para determianr si el usuario tiene el mouse encima de lso botones
+
+#Crea la barra de vida
+def lifebars(player, surface, pos):
+    if(player.getLife() > 75):
+        color = verde
+    elif(player.getLife() > 50):
+        color = amarillo
+    else:
+        color = rojo
+    pygame.draw.rect(surface, color, (pos[0],pos[1],player.getLife(),10))
+    #pygame.display.update()

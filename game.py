@@ -75,7 +75,7 @@ def game(ANCHO,ALTO):
             print "yiyi"
         events = pygame.event.get()
         tipo = pygame.font.SysFont("monospace", 15)
-        blood = tipo.render(("Vida actual: " + str(magician.getLife())),1, (255,0,0))
+        blood = tipo.render("Vida actual: " ,1, (255,0,0))
         pantalla.blit(blood, (0, ALTO))
         if(magician.getLife() > 0):
             point = tipo.render(("Puntos: " + str(magician.getScore())),1, (255,0,0))
@@ -157,6 +157,7 @@ def game(ANCHO,ALTO):
         pantalla.blit(fondo,[0,0])
         pantalla.blit(blood,[0,ALTO+15])
         pantalla.blit(point,[300,ALTO+15]) #+ 15])
+        lifebars(magician,pantalla,[120,ALTO+18])
         ls_todos.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
