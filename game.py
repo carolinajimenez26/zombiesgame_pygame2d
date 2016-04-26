@@ -242,10 +242,12 @@ def game(ANCHO,ALTO):
                 magician.mov=0
 
                 for v in ls_vidas:
-                    if(checkCollision(magician,v)): # si se comio la vida
+                    ls_vidas_i = pygame.sprite.spritecollide(magician, ls_vidas, True)
+                    for vida in ls_vidas_i:
+                        ls_vidas.remove(vida)
+                        ls_todos.remove(vida)
                         magician.setLife(magician.getLife()+10)
                         lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
-                        ls_vidas.remove(v)
 
             pantalla = pygame.display.set_mode([10,10])
             pygame.display.flip()
