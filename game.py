@@ -7,6 +7,7 @@ def game(ANCHO,ALTO):
     aux_oleada = 1 #para que sepa que oleada va a mandar
     terminarp=False
     level=1
+    contador_vida = 0 #Para saber cuando mandar vidas
     while(not terminarp):
         if(level==1):
             #Inicializacion de pantalla
@@ -29,7 +30,7 @@ def game(ANCHO,ALTO):
             ls_enemigos = pygame.sprite.Group()
             ls_balase = pygame.sprite.Group()
             ls_jugadores = pygame.sprite.Group()
-
+            ls_vidas = pygame.sprite.Group()
             #Creamos los personajes
 
             #-----------------magician------------------------------------------------
@@ -100,9 +101,16 @@ def game(ANCHO,ALTO):
                     reloj.tick(0.5)
                     oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
                     aux_oleada += 1 #proxima oleada
+                    contador_vida = 0
 
                 events = pygame.event.get()
-
+                print "cont : " , contador_vida
+                if(magician.getLife() < 35 and contador_vida >= 300):#si se va a morir, debe coger una vida
+                    anciano = OldMan('viejo_vida.png',[0,0],ANCHO, ALTO)
+                    anciano.setPos([random.randrange(ANCHO - anciano.getRect()[2]),random.randrange(ALTO - 50 - anciano.getRect()[3])])
+                    ls_todos.add(anciano)
+                    ls_vidas.add(anciano)
+                    contador_vida = 0
 
                 total_segundos=con_cuadros // tasa_cambio
                 minutos= total_segundos // 60
@@ -204,6 +212,7 @@ def game(ANCHO,ALTO):
 
                 con_cuadros+=1
                 reloj.tick(tasa_cambio)
+                contador_vida += 1
 
                 magician.enemigos=len(ls_enemigos)
 
@@ -231,8 +240,16 @@ def game(ANCHO,ALTO):
                     enemigo.jugador = magician.getPos()
 
                 magician.mov=0
+
+                for v in ls_vidas:
+                    if(checkCollision(magician,v)): # si se comio la vida
+                        magician.setLife(magician.getLife()+10)
+                        lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
+                        ls_vidas.remove(v)
+
             pantalla = pygame.display.set_mode([10,10])
             pygame.display.flip()
+
         if(level==2):
             #Inicializacion de pantalla
             pygame.init()

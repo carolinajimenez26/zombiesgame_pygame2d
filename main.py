@@ -61,7 +61,7 @@ def main():
                         terminar = True
                         #pygame.display.quit()
                         s_fondo.stop()
-                        g = game(ANCHO,ALTO)#inicia el juego
+                        game(ANCHO,ALTO)#inicia el juego
 
 
                     if(pres_boton(ANCHO/2,ALTO/2+50,ad2)):

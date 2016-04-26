@@ -101,12 +101,19 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.enemigos=0
         self.WIDTH = w
         self.HIGH = h
+        #speed
+        self.increment_x = self.getRect()[2] / 5
+        self.increment_y = self.getRect()[3] / 5
 
     def getScore(self):
         return self.score
 
     def setScore(self, score):
         self.score += score
+
+    def setSpeed(self, speed):
+        self.increment_x = speed[0]
+        self.increment_y = speed[1]
 
     def getRect(self):
     	return self.rect
@@ -119,39 +126,31 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.y = pos[1]
 
     def moveLeft(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(x - increment_x >= 0):
-            self.setPos([x - increment_x,y])
+        if(x - self.increment_x >= 0):
+            self.setPos([x - self.increment_x,y])
             self.dir = 1
 
     def moveRight(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(x + increment_x < self.WIDTH - self.rect[2]):
-            self.setPos([x + increment_x,y])
+        if(x + self.increment_x < self.WIDTH - self.rect[2]):
+            self.setPos([x + self.increment_x,y])
             self.dir = 0
 
     def moveUp(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y >= 10):
-            self.setPos([x,y - increment_y])
+        if(y + self.increment_y >= 10):
+            self.setPos([x,y - self.increment_y])
             self.dir = 2
 
     def moveDown(self):
-        increment_x = self.getRect()[2] / 5
-        increment_y = self.getRect()[3] / 5
         x = self.getPos()[0]
         y = self.getPos()[1]
-        if(y + increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
-            self.setPos([x,y + increment_y])
+        if(y + self.increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
+            self.setPos([x,y + self.increment_y])
             self.dir = 3
 
     def getLife(self):
@@ -170,6 +169,10 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.dir = dir
 
 class Magician(Player): #Hereda de la clase Player
+    def __init__(self, img_name, pos, w, h):
+        Player.__init__(self, img_name, pos, w, h)
+
+class OldMan(Player):
     def __init__(self, img_name, pos, w, h):
         Player.__init__(self, img_name, pos, w, h)
 
