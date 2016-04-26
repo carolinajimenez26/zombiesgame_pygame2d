@@ -67,7 +67,6 @@ def game(ANCHO,ALTO):
             player_current = 0
             flag = False
             cont = 0
-            oleada=5
             pantalla_s.play()
 
             #Variables del reloj
@@ -77,7 +76,6 @@ def game(ANCHO,ALTO):
             seflim=0
 
             while(not terminar):
-                print "oleada : " , aux_oleada
 
                 if(magician.getLife() <= 0): #vuelve al menu ppal
                     pantalla_s.stop()
@@ -85,8 +83,6 @@ def game(ANCHO,ALTO):
                     game_over(ANCHO,ALTO)
                     terminarp=True
                     terminar=True
-                print "ls_enemigos : " , ls_enemigos
-                print "len(ls_enemigos) : " , len(ls_enemigos)
 
                 if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
                     pantalla_s.stop()
@@ -97,6 +93,11 @@ def game(ANCHO,ALTO):
 
                 #----------------ENEMIGOS-------------------------
                 if(len(ls_enemigos) == 0 and aux_oleada < 4): #si ya los mato a todos
+                    tipo2 = pygame.font.SysFont("comicsansms", 50)
+                    texto_oleada = tipo2.render("OLEADA "+str(aux_oleada),1, (0,0,0))
+                    pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
+                    pygame.display.flip()
+                    reloj.tick(0.5)
                     oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
                     aux_oleada += 1 #proxima oleada
 
