@@ -79,6 +79,11 @@ def game(ANCHO,ALTO):
             while(not terminar):
 
                 if(magician.getLife() <= 0): #vuelve al menu ppal
+                    ls_todos.draw(pantalla)
+                    pygame.display.flip()
+                    magician.image = load_image("muerte.png", curdir, alpha=True)
+                    ls_todos.draw(pantalla)
+                    pygame.display.flip()
                     pantalla_s.stop()
                     reloj.tick(0.3)
                     game_over(ANCHO,ALTO)
