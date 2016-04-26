@@ -2,6 +2,7 @@ from func import *
 
 
 class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
+    #cargar_fondo('zombie1.png',ancho,alto)
     def __init__(self, img_name, pos, w, h):
     	pygame.sprite.Sprite.__init__(self)
     	self.image = load_image(img_name, curdir, alpha=True)

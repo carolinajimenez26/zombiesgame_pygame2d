@@ -12,10 +12,8 @@ def game_over(ANCHO,ALTO):
     #Cargando imagenes
     posinif = [0,0]
     gameo = cargar_fondo(curdir + "/images/gameover.png", 355, 355)
-
     gameo_s=load_sound('gameover.ogg',curdir)
     gameo_s.play()
-
     reloj=pygame.time.Clock()
     terminar=False
     actual=0
