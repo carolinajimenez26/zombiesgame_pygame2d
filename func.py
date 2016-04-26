@@ -1,15 +1,113 @@
 from imports import *
+from objects import *
 
-"""def oleadax(cant,oleada):
-    #----------------ENEMIGOS-------------------------
-    #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
-    for i in range(0,cant):
+class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
+    #cargar_fondo('zombie1.png',ancho,alto)
+    def __init__(self, img_name, pos, w, h):
+    	pygame.sprite.Sprite.__init__(self)
+    	self.image = load_image(img_name, curdir, alpha=True)
+    	self.rect = self.image.get_rect()
+    	self.pos = pos
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+        self.jugador = (0,0)
+        self.direccion = 0
+        self.WIDTH = w
+        self.HIGH = h
+
+    def getDir(self):
+        return self.direccion
+
+    def setDir(self, dir):
+        self.direccion = dir
+
+    def getRect(self):
+    	return self.rect
+
+    def getPos(self):
+    	return [self.rect.x,self.rect.y]
+
+    def setPos(self,pos):
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+
+    def moveLeft(self):
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x - increment_x >= 0):
+            self.setPos([x - increment_x,y])
+            self.dir = 1
+
+    def moveRight(self):
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x + increment_x < self.WIDHT - self.rect[2]):
+            self.setPos([x + increment_x,y])
+            self.dir = 0
+
+    def moveUp(self):
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y >= 10):
+            self.setPos([x,y - increment_y])
+            self.dir = 2
+
+    def moveDown(self):
+        increment_x = self.getRect()[2] / 5
+        increment_y = self.getRect()[3] / 5
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
+            self.setPos([x,y + increment_y])
+            self.dir = 3
+
+
+class Zombie(Enemy):#Hereda de la clase Enemigo
+    def __init__(self, img_name, pos, w, h):
+        Enemy.__init__(self, img_name, pos, w, h)
+        self.moves = [0 for x in range(w*h)] #movimientos que debe realizar
+        self.i = 0
+
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
+
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
+
+def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
+    if(nivel == 1):
         if(oleada == 1):
-            enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
-            ls_enemigos.add(enemy)
-            ls_todos.add(enemy)
-            enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
-            enemy.restartMovements(magician.getPos())"""
+            for i in range(0,5):
+                enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
+                ls_enemigos.add(enemy)
+                ls_todos.add(enemy)
+                enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
+                enemy.restartMovements(jugador.getPos())
+        if(oleada == 2):
+            for i in range(0,10):
+                enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
+                ls_enemigos.add(enemy)
+                ls_todos.add(enemy)
+                enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
+                enemy.restartMovements(jugador.getPos())
+        if(oleada == 3):
+            for i in range(0,15):
+                enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
+                ls_enemigos.add(enemy)
+                ls_todos.add(enemy)
+                enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
+                enemy.restartMovements(jugador.getPos())
+    if(nivel == 2):
+        pass
 
 def checkCollision(sprite1, sprite2):
     col = pygame.sprite.collide_rect(sprite1, sprite2)

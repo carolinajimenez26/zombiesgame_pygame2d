@@ -1,12 +1,16 @@
 from objects import *
 from loser import game_over
 from levelup import levelup
+
+
 def game(ANCHO,ALTO):
+    aux_oleada = 1 #para que sepa que oleada va a mandar
     terminarp=False
     level=1
     while(not terminarp):
         if(level==1):
             #Inicializacion de pantalla
+
             pygame.init()
             pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
             pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
@@ -46,16 +50,6 @@ def game(ANCHO,ALTO):
             ls_todos.add(magician)
             ls_jugadores.add(magician)
 
-            #----------------ENEMIGOS-------------------------
-            #Tener en cuenta a la hora de posicionar los enemigos, que no se choque con ningun otro
-            for i in range(0,5):
-                enemy = Zombie('izqenemigo1_1.png',[0,0], ANCHO, ALTO - 50)
-                ls_enemigos.add(enemy)
-                ls_todos.add(enemy)
-                enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
-                enemy.restartMovements(magician.getPos())
-
-
             fondo = load_image('background.jpg',curdir, alpha=False)
             fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
             pantalla.fill(blanco)
@@ -83,19 +77,28 @@ def game(ANCHO,ALTO):
             seflim=0
 
             while(not terminar):
+                print "oleada : " , aux_oleada
+
                 if(magician.getLife() <= 0): #vuelve al menu ppal
                     pantalla_s.stop()
                     reloj.tick(0.3)
                     game_over(ANCHO,ALTO)
                     terminarp=True
                     terminar=True
+                print "ls_enemigos : " , ls_enemigos
+                print "len(ls_enemigos) : " , len(ls_enemigos)
 
-                if(len(ls_enemigos) == 0 ) and (oleada == 5):
+                if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
                     pantalla_s.stop()
                     reloj.tick(0.6)
                     level+=1
                     terminar=True
                     levelup(ANCHO,ALTO,2)
+
+                #----------------ENEMIGOS-------------------------
+                if(len(ls_enemigos) == 0 and aux_oleada < 4): #si ya los mato a todos
+                    oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
+                    aux_oleada += 1 #proxima oleada
 
                 events = pygame.event.get()
 
@@ -208,7 +211,6 @@ def game(ANCHO,ALTO):
                         if(cont == 0):
                             magician.crash()
                             lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
-                            print magician.getLife()
                             flag = True
 
                 if(flag):
@@ -230,16 +232,13 @@ def game(ANCHO,ALTO):
                 magician.mov=0
             pantalla = pygame.display.set_mode([10,10])
             pygame.display.flip()
+        if(level==2):
+            #Inicializacion de pantalla
+            pygame.init()
+            pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
+            pygame.display.set_caption("Magician-zombie v0.1 - Level 2 ", 'Spine Runtime')
+            tipo = pygame.font.SysFont("monospace", 15)
+            pantalla.fill((0,0,0))
+            #Fin de inicializacion de pantalla
         else:
-            if(level==2):
-                #Inicializacion de pantalla
-                pygame.init()
-                pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
-                pygame.display.set_caption("Magician-zombie v0.1 - Level 2 ", 'Spine Runtime')
-                tipo = pygame.font.SysFont("monospace", 15)
-                pantalla.fill((0,0,0))
-                #Fin de inicializacion de pantalla
-            else:
-                sys.exit()
-
-    return 0
+            sys.exit()
