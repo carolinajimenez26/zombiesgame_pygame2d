@@ -285,6 +285,19 @@ class CircleBullet(Weapon):
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
 
+class RectBullet(Weapon):
+    def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
+    	Weapon.__init__(self, img_name, pos)
+
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])
+        self.i = 0 #debe empezar a recorrerla desde cero
+
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
+
 
 def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
     if(nivel == 1):
@@ -398,14 +411,15 @@ def Bresenhamrecta(p): #algoritmo para dibujar rectas
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
 def plotpoint((x0,y0),(x,y),res):
-    res.append((x0+x,y0+y))
+    res.append((x0-y,y0+x))
     res.append((x0-x,y0+y))
+    res.append((x0+x,y0+y))
+    res.append((x0+y,y0+x))
+    res.append((x0+y,y0-x))
     res.append((x0+x,y0-y))
     res.append((x0-x,y0-y))
-    res.append((x0+y,y0+x))
-    res.append((x0-y,y0+x))
-    res.append((x0+y,y0-x))
     res.append((x0-y,y0-x))
+
 #Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
 
 #Algoritmo de Bresenham para la circunferencia

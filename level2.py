@@ -86,9 +86,13 @@ def level2(ANCHO,ALTO, level = 2):
 
     #--------------------APARICION INICIAL DEL BOSS---------------
     boss_s.play()
-    while(True):
-        middle = [(ANCHO / 2) - (boss.getRect()[2] / 2), (ALTO / 2) - (boss.getRect()[3] / 2)]
-        boss.restartMovements(middle)#se va hasta la mitad de la pantalla
+
+    cont_balas = 60
+    terminar = False
+    middle = [(ANCHO / 2) - (boss.getRect()[2] / 2), (ALTO / 2) - (boss.getRect()[3] / 2)]
+    boss.restartMovements(middle)#se va hasta la mitad de la pantalla
+    print "0"
+    while(not terminar):
 
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
@@ -97,22 +101,73 @@ def level2(ANCHO,ALTO, level = 2):
         pygame.display.flip()
         reloj.tick(60)
 
-    '''bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
+        if(boss.getPos() == middle):
+            reloj.tick(0.2)
+            terminar = True #se sale de este ciclo cuando llegue a la mitad
+    """print "1"
+
+    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
     ls_balae.add(bala_boss)
     ls_todos.add(bala_boss)
 
     bala_boss.restartMovements(boss.getPos())
 
-    pantalla.blit(fondo,[0,0])
-    ls_todos.draw(pantalla)
-    ls_boss.draw(pantalla)
-    ls_todos.update()
-    pygame.display.flip()
-    reloj.tick(60)
+    while(cont_balas > 0):
+
+        bala_boss.update()
+        pantalla.blit(fondo,[0,0])
+        ls_todos.draw(pantalla)
+        ls_boss.draw(pantalla)
+        ls_balae.draw(pantalla)
+        ls_todos.update()
+        pygame.display.flip()
+        reloj.tick(100)
+
+        cont_balas -= 1
+
+    ls_balae.remove(bala_boss)
+
+    terminar = False
+    print "2"
+    bala_boss = RectBullet('bala.png',boss.getPos())
+    bala_boss.restartMovements(magician.getPos())
+
+    while(not terminar):
+
+        bala_boss.update()
+        pantalla.blit(fondo,[0,0])
+        ls_todos.draw(pantalla)
+        ls_boss.draw(pantalla)
+        ls_balae.draw(pantalla)
+        ls_todos.update()
+        pygame.display.flip()
+        reloj.tick(60)
+        if(bala_boss.i == len(bala_boss.moves)):#si ya le llego la bala al magician
+            terminar = True
+    """
+    terminar = False
+    up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
+    boss.restartMovements(up)#se va hasta la mitad de la pantalla
+
+    print "3"
+    while(not terminar): #se va
+    
+        pantalla.blit(fondo,[0,0])
+        ls_todos.draw(pantalla)
+        ls_boss.draw(pantalla)
+        ls_todos.update()
+        pygame.display.flip()
+        reloj.tick(60)
+
+        if(boss.getPos() == up):
+            reloj.tick(0.2)
+            terminar = True #se sale de este ciclo cuando llegue a la mitad
 
     boss_s.stop()
 
-    pantalla_s.play()'''
+    print "end"
+    reloj.tick(0.5)
+    #pantalla_s.play()
 
     '''while(not terminar):
 
@@ -295,5 +350,5 @@ def level2(ANCHO,ALTO, level = 2):
         con_cuadros+=1
         reloj.tick(tasa_cambio)
         contador_vida += 1
-
-    return True'''
+'''
+    return True
