@@ -85,6 +85,15 @@ class Boss(Enemy):
     def getSpeed(self):
         return self.speed
 
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
+
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
+
 class Vampire(Enemy):
     def __init__(self, img_name,table,pos,w,h):
         Enemy.__init__(self, img_name,pos,w,h)

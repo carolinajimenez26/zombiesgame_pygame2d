@@ -9,7 +9,7 @@ def level2(ANCHO,ALTO, level = 2):
     #Inicializacion de pantalla
     pygame.init()
     pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
-    pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
+    pygame.display.set_caption("Magician-zombie v0.1 - Level 2 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
     pantalla_s=load_sound('background.ogg',curdir)
     shot_s=load_sound('shot.wav',curdir)
@@ -26,12 +26,13 @@ def level2(ANCHO,ALTO, level = 2):
     ls_balase = pygame.sprite.Group()
     ls_jugadores = pygame.sprite.Group()
     ls_vidas = pygame.sprite.Group()
+    ls_boss = pygame.sprite.Group()
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
     magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
-    middle = [(ANCHO / 2) - (magician.getRect()[2] / 2), (ALTO / 2) - (magician.getRect()[3] / 2)]
-    magician.setPos(middle) #posiciona el magician en la mitad de la pantalla
+    bottom = [(ANCHO / 2) - (magician.getRect()[2] / 2), ALTO]
+    magician.setPos(bottom) #posiciona el magician en la mitad de la pantalla
 
     #Agrega las imagenes del magician
     magician.imaged.append(load_image('dere_1.png',curdir,alpha=True))
@@ -48,13 +49,15 @@ def level2(ANCHO,ALTO, level = 2):
 
     #------------------BOSS-------------------------------------
     #Creamos el jefe 26 x 33 or 32 x 48
-    table = cargar_fondo(curdir + "/images/" + 'boss.png', 26, 33)
-    boss = Boss('ab_1.png',table,[0,0],ANCHO, ALTO - 50)
-    (BMargen_x,BMargen_y) = boss.getMargen()
-    boss.setPos((ANCHO-BMargen_x,(ALTO / 2) - (BMargen_y / 2)))
+    table = cargar_fondo(curdir + "/images/" + 'boss.png', 13, 28) #ARREGLAR
+    boss = Boss('boss.png',table,[0,0],ANCHO, ALTO - 50)
+    up = [(ANCHO / 2) - (boss.getRect()[2] / 2), 0]
+    boss.setPos(up)
+    ls_todos.add(boss)
+    ls_boss.add(boss)
 
     #------------------------PANTALLA--------------------------
-    fondo = load_image('background.jpg',curdir, alpha=False)
+    fondo = load_image('fondo2.jpg',curdir, alpha=False)
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
     pantalla.fill(blanco)
 
@@ -62,6 +65,7 @@ def level2(ANCHO,ALTO, level = 2):
     splash = False
     ls_todos.draw(pantalla)
     ls_enemigos.draw(pantalla)
+    ls_boss.draw(pantalla)
 
     pygame.mouse.set_visible(False) #Oculta el puntero del mouse
     pygame.display.flip()
@@ -71,7 +75,6 @@ def level2(ANCHO,ALTO, level = 2):
     player_current = 0
     flag = False
     cont = 0
-    pantalla_s.play()
 
     #Variables del reloj
     con_cuadros=0
@@ -79,8 +82,23 @@ def level2(ANCHO,ALTO, level = 2):
     tiempo_ini=10
     seflim=0
 
+    #--------------------APARICION INICIAL DEL BOSS---------------
 
-    while(not terminar):
+    while(True):
+        middle = [(ANCHO / 2) - (boss.getRect()[2] / 2), (ALTO / 2) - (boss.getRect()[3] / 2)]
+        boss.restartMovements(middle)#se va hasta la mitad de la pantalla
+
+
+        pantalla.blit(fondo,[0,0])
+        ls_todos.draw(pantalla)
+        ls_boss.draw(pantalla)
+        ls_todos.update()
+        pygame.display.flip()
+        reloj.tick(60)
+
+    pantalla_s.play()
+
+    '''while(not terminar):
 
         if(magician.getLife() <= 0): #vuelve al menu ppal
           ls_todos.draw(pantalla)
@@ -262,4 +280,4 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(tasa_cambio)
         contador_vida += 1
 
-    return True
+    return True'''
