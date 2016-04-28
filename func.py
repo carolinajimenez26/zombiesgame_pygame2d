@@ -1,5 +1,4 @@
 from imports import *
-from objects import *
 
 class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
     #cargar_fondo('zombie1.png',ancho,alto)
@@ -67,6 +66,40 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
             self.setPos([x,y + increment_y])
             self.dir = 3
 
+    def getMargen(self):
+        return (self.rect[2],self.rect[3])
+
+class Boss(Enemy):
+    def __init__(self, img_name,table,pos,w,h):
+        Enemy.__init__(self, img_name,pos,w,h)
+        self.table = table
+        self.life = 1000
+        self.speed = 5
+
+    def getLife(self):
+    	return self.life
+
+    def setLife(self,life):
+    	self.life = life
+
+    def getSpeed(self):
+        return self.speed
+
+class Vampire(Enemy):
+    def __init__(self, img_name,table,pos,w,h):
+        Enemy.__init__(self, img_name,pos,w,h)
+        self.table = table
+        self.life = 5
+        self.speed = 5
+
+    def getLife(self):
+    	return self.life
+
+    def setLife(self,life):
+    	self.life = life
+
+    def getSpeed(self):
+        return self.speed
 
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos, w, h):
@@ -82,6 +115,139 @@ class Zombie(Enemy):#Hereda de la clase Enemigo
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
+
+class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
+    def __init__(self, img_name, pos,w, h):
+    	pygame.sprite.Sprite.__init__(self)
+    	self.image = load_image(img_name, curdir, alpha=True)
+    	self.rect = self.image.get_rect()
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+    	self.life = 100
+        self.score = 0
+        self.dir = 0 #0 derecha , 1 izquierda, 2 arriba, 3 abajo
+        #imagenes para movimiento
+        self.imaged = [] #derecha
+        self.imagei = [] #izquierda
+        self.imagenar = [] #arriba
+        self.imagena = [] #abajo
+        self.enemigos=0
+        self.WIDTH = w
+        self.HIGH = h
+        #speed
+        self.increment_x = self.getRect()[2] / 5
+        self.increment_y = self.getRect()[3] / 5
+
+    def getScore(self):
+        return self.score
+
+    def setScore(self, score):
+        self.score += score
+
+    def setSpeed(self, speed):
+        self.increment_x = speed[0]
+        self.increment_y = speed[1]
+
+    def getRect(self):
+    	return self.rect
+
+    def getPos(self):
+    	return [self.rect.x,self.rect.y]
+
+    def setPos(self,pos):
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+
+    def moveLeft(self):
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x - self.increment_x >= 0):
+            self.setPos([x - self.increment_x,y])
+            self.dir = 1
+
+    def moveRight(self):
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(x + self.increment_x < self.WIDTH - self.rect[2]):
+            self.setPos([x + self.increment_x,y])
+            self.dir = 0
+
+    def moveUp(self):
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + self.increment_y >= 10):
+            self.setPos([x,y - self.increment_y])
+            self.dir = 2
+
+    def moveDown(self):
+        x = self.getPos()[0]
+        y = self.getPos()[1]
+        if(y + self.increment_y < self.HIGH - self.rect[3]): # si no se pasa de la pantalla
+            self.setPos([x,y + self.increment_y])
+            self.dir = 3
+
+    def getLife(self):
+    	return self.life
+
+    def setLife(self,life):
+    	self.life = life
+
+    def crash(self):
+        self.setLife(self.getLife() - 1) #quita una vida
+
+    def getDir(self):
+        return self.dir
+
+    def setDir(self,dir):
+        self.dir = dir
+
+    def getMargen(self):
+        return (self.rect[2],self.rect[3])
+
+class Magician(Player): #Hereda de la clase Player
+    def __init__(self, img_name, pos, w, h):
+        Player.__init__(self, img_name, pos, w, h)
+
+class OldMan(Player):
+    def __init__(self, img_name, pos, w, h):
+        Player.__init__(self, img_name, pos, w, h)
+
+class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
+    def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
+    	pygame.sprite.Sprite.__init__(self)
+    	self.image = load_image(img_name, curdir, alpha=True)
+    	self.rect = self.image.get_rect()
+    	self.pos = pos
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+        self.speed = 5
+        self.magiciandir = 0 #dispara dependiendo de la posicion del magician
+
+    def getRect(self):
+    	return self.rect
+
+    def getPos(self):
+    	return [self.rect.x,self.rect.y]
+
+    def setPos(self,pos):
+    	self.rect.x = pos[0]
+    	self.rect.y = pos[1]
+
+    def setDir(self,dir):
+        self.magiciandir = dir
+
+    def getDir(self):
+        return self.magiciandir
+
+    def update(self):
+        if(self.magiciandir == 0): #derecha
+            self.rect.x += self.speed
+        if(self.magiciandir == 1):#izquierda
+            self.rect.x -= self.speed
+        if(self.magiciandir == 2):#arriba
+            self.rect.y -= self.speed
+        if(self.magiciandir == 3):#abajo
+            self.rect.y += self.speed
 
 def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
     if(nivel == 1):
@@ -106,8 +272,14 @@ def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
                 ls_todos.add(enemy)
                 enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
                 enemy.restartMovements(jugador.getPos())
-    if(nivel == 2):
-        pass
+    if(nivel == 2): #una sola oleada, pero muy fuerte
+        for i in range(0,15):
+            enemy = Vampire('ene.png',[0,0], ANCHO, ALTO - 50)
+            ls_enemigos.add(enemy)
+            ls_todos.add(enemy)
+            enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
+            enemy.restartMovements(jugador.getPos())
+
 
 def checkCollision(sprite1, sprite2):
     col = pygame.sprite.collide_rect(sprite1, sprite2)

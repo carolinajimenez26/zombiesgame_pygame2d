@@ -1,4 +1,4 @@
-from objects import *
+from func import *
 from loser import game_over
 from levelup import levelup
 
@@ -83,7 +83,6 @@ def level1(ANCHO,ALTO, level = 1):
           reloj.tick(0.3)
           game_over(ANCHO,ALTO)
           terminar=True
-          return True
 
         if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
           pantalla_s.stop()
@@ -214,18 +213,13 @@ def level1(ANCHO,ALTO, level = 1):
         if(cont >= 8):
             cont=0
 
-        print "hola1"
         #lista de balas
         for b in ls_balaj:
-            print "hola2"
             ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
             for impacto in ls_impactos:
-                print "hola3"
                 ls_balaj.remove(b)
                 ls_todos.remove(b)
                 magician.setScore(10)
-                print "enemigos (shutted): " , len(ls_enemigos)
-
 
         for enemigo in ls_enemigos:
             enemigo.jugador = magician.getPos()
@@ -253,6 +247,8 @@ def level1(ANCHO,ALTO, level = 1):
         con_cuadros+=1
         reloj.tick(tasa_cambio)
         contador_vida += 1
+
+    return True
 
 #pantalla = pygame.display.set_mode([10,10])
 #pygame.display.flip()
