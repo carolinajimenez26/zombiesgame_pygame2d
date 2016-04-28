@@ -1,5 +1,6 @@
 from func import *
 from loser import game_over
+from winner import *
 
 def level2(ANCHO,ALTO, level = 2):
 
@@ -144,6 +145,8 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(60)
         if(bala_boss.i == len(bala_boss.moves)):#si ya le llego la bala al magician
             terminar = True
+
+    ls_balae.remove(bala_boss)
     """
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
@@ -151,7 +154,7 @@ def level2(ANCHO,ALTO, level = 2):
 
     print "3"
     while(not terminar): #se va
-    
+
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
         ls_boss.draw(pantalla)
@@ -161,15 +164,18 @@ def level2(ANCHO,ALTO, level = 2):
 
         if(boss.getPos() == up):
             reloj.tick(0.2)
-            terminar = True #se sale de este ciclo cuando llegue a la mitad
+            terminar = True
+            reloj.tick(0.2)
 
     boss_s.stop()
 
     print "end"
-    reloj.tick(0.5)
-    #pantalla_s.play()
 
-    '''while(not terminar):
+    terminar = False
+    pantalla_s.play()
+    flag = False
+
+    while(not terminar):
 
         if(magician.getLife() <= 0): #vuelve al menu ppal
           ls_todos.draw(pantalla)
@@ -182,24 +188,27 @@ def level2(ANCHO,ALTO, level = 2):
           game_over(ANCHO,ALTO)
           terminar=True
 
-        if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
+        if((len(ls_enemigos) == 0 ) and flag and not terminar):
           pantalla_s.stop()
           reloj.tick(0.6)
           level+=1
           terminar=True
-          levelup(ANCHO,ALTO,2)
+          winner(ANCHO,ALTO)#ganaste
 
         #----------------ENEMIGOS-------------------------
-        if(len(ls_enemigos) == 0 and aux_oleada < 4): #si ya los mato a todos
+        if(len(ls_enemigos) == 0): #si ya los mato a todos
           tipo2 = pygame.font.SysFont("comicsansms", 50)
-          texto_oleada = tipo2.render("OLEADA "+str(aux_oleada),1, (0,0,0))
+          texto_oleada = tipo2.render("READY? ",1, (255,255,255))
+          pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
+          pygame.display.flip()
+          reloj.tick(0.5)
+          texto_oleada = tipo2.render("GO! ",1, (255,255,255))
           pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
           pygame.display.flip()
           reloj.tick(0.5)
           oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
-          print "enemigos : " , len(ls_enemigos)
-          aux_oleada += 1 #proxima oleada
           contador_vida = 0
+          flag = True
 
         events = pygame.event.get()
         #print "cont : " , contador_vida
@@ -350,5 +359,5 @@ def level2(ANCHO,ALTO, level = 2):
         con_cuadros+=1
         reloj.tick(tasa_cambio)
         contador_vida += 1
-'''
+
     return True

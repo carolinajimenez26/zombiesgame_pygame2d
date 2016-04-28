@@ -99,7 +99,7 @@ class Vampire(Enemy):
         Enemy.__init__(self, img_name,pos,w,h)
         self.table = table
         self.life = 5
-        self.speed = 5
+        self.speed = 10
 
     def getLife(self):
     	return self.life
@@ -250,7 +250,7 @@ class Weapon(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
 
-class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
+class Bullet(Weapon): #Hereda de la clase sprite
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
         self.magiciandir = 0 #dispara dependiendo de la posicion del magician
