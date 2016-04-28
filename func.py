@@ -101,6 +101,15 @@ class Vampire(Enemy):
     def getSpeed(self):
         return self.speed
 
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = Bresenhamrecta([self.getPos(),pos])#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
+
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
+
 class Zombie(Enemy):#Hereda de la clase Enemigo
     def __init__(self, img_name, pos, w, h):
         Enemy.__init__(self, img_name, pos, w, h)
@@ -273,8 +282,9 @@ def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
                 enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
                 enemy.restartMovements(jugador.getPos())
     if(nivel == 2): #una sola oleada, pero muy fuerte
+        table = cargar_fondo(curdir + "/images/" + 'ene.png', 26, 33)
         for i in range(0,15):
-            enemy = Vampire('ene.png',[0,0], ANCHO, ALTO - 50)
+            enemy = Vampire('ene.png',table,[0,0], ANCHO, ALTO - 50)
             ls_enemigos.add(enemy)
             ls_todos.add(enemy)
             enemy.setPos([random.randrange(ANCHO - enemy.getRect()[2]),random.randrange(ALTO - 50 - enemy.getRect()[3])])
