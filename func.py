@@ -230,7 +230,7 @@ class OldMan(Player):
     def __init__(self, img_name, pos, w, h):
         Player.__init__(self, img_name, pos, w, h)
 
-class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
+class Weapon(pygame.sprite.Sprite): #Hereda de la clase sprite
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
     	pygame.sprite.Sprite.__init__(self)
     	self.image = load_image(img_name, curdir, alpha=True)
@@ -239,7 +239,6 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
         self.speed = 5
-        self.magiciandir = 0 #dispara dependiendo de la posicion del magician
 
     def getRect(self):
     	return self.rect
@@ -250,6 +249,11 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
     def setPos(self,pos):
     	self.rect.x = pos[0]
     	self.rect.y = pos[1]
+
+class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
+    def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
+    	Weapon.__init__(self, img_name, pos)
+        self.magiciandir = 0 #dispara dependiendo de la posicion del magician
 
     def setDir(self,dir):
         self.magiciandir = dir
@@ -266,6 +270,21 @@ class Bullet(pygame.sprite.Sprite): #Hereda de la clase sprite
             self.rect.y -= self.speed
         if(self.magiciandir == 3):#abajo
             self.rect.y += self.speed
+
+class CircleBullet(Weapon):
+    def __init__(self, img_name, pos, r): #img para cargar, y su padre(de donde debe salir la bala)
+    	Weapon.__init__(self, img_name, pos)
+        self.r = r #radio de la circunferencia
+
+    def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
+        self.moves = CircunfPtoMedio(self.getPos(),self.r)#carga los nuevos movimientos
+        self.i = 0 #debe empezar a recorrerla desde cero
+
+    def update(self): #se mueve
+        if(self.i < len(self.moves)):
+            self.setPos(self.moves[self.i])
+            self.i += 1 #para que recorra el siguiente
+
 
 def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
     if(nivel == 1):
@@ -378,7 +397,7 @@ def Bresenhamrecta(p): #algoritmo para dibujar rectas
 
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
-def plotpoint((x0,y0),(x,y),pantalla,res):
+def plotpoint((x0,y0),(x,y),res):
     res.append((x0+x,y0+y))
     res.append((x0-x,y0+y))
     res.append((x0+x,y0-y))
@@ -390,13 +409,12 @@ def plotpoint((x0,y0),(x,y),pantalla,res):
 #Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
 
 #Algoritmo de Bresenham para la circunferencia
-def CircunfPtoMedio((x0,y0),r, pantalla):
+def CircunfPtoMedio((x0,y0),r):
     x=0
     y=r
     p=1-r
     res=[]
-    #pygame.draw.line(pantalla, blanco, (x0,y0), (x,y), 1 )
-    plotpoint((x0,y0),(x,y),pantalla,res)
+    plotpoint((x0,y0),(x,y),res)
     while(x<y):
         x=x+1
         if(p<0):
@@ -404,7 +422,7 @@ def CircunfPtoMedio((x0,y0),r, pantalla):
         else:
             y=y-1
             p=p+2*(x-y)+1
-    plotpoint((x0,y0),(x,y),pantalla)
+    plotpoint((x0,y0),(x,y),res)
     return res
 #fin Algoritmo de Bresenham para la circunferencia
 

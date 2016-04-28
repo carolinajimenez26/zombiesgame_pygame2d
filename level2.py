@@ -27,11 +27,12 @@ def level2(ANCHO,ALTO, level = 2):
     ls_jugadores = pygame.sprite.Group()
     ls_vidas = pygame.sprite.Group()
     ls_boss = pygame.sprite.Group()
+    ls_balae = pygame.sprite.Group()
     #Creamos los personajes
 
     #-----------------magician------------------------------------------------
     magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
-    bottom = [(ANCHO / 2) - (magician.getRect()[2] / 2), ALTO]
+    bottom = [(ANCHO / 2) - (magician.getRect()[2] / 2), ALTO - (magician.getRect()[3] / 2)]
     magician.setPos(bottom) #posiciona el magician en la mitad de la pantalla
 
     #Agrega las imagenes del magician
@@ -55,6 +56,7 @@ def level2(ANCHO,ALTO, level = 2):
     boss.setPos(up)
     ls_todos.add(boss)
     ls_boss.add(boss)
+    boss_s=load_sound('boss.wav',curdir)
 
     #------------------------PANTALLA--------------------------
     fondo = load_image('fondo2.jpg',curdir, alpha=False)
@@ -83,11 +85,10 @@ def level2(ANCHO,ALTO, level = 2):
     seflim=0
 
     #--------------------APARICION INICIAL DEL BOSS---------------
-
+    boss_s.play()
     while(True):
         middle = [(ANCHO / 2) - (boss.getRect()[2] / 2), (ALTO / 2) - (boss.getRect()[3] / 2)]
         boss.restartMovements(middle)#se va hasta la mitad de la pantalla
-
 
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
@@ -96,7 +97,22 @@ def level2(ANCHO,ALTO, level = 2):
         pygame.display.flip()
         reloj.tick(60)
 
-    pantalla_s.play()
+    '''bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
+    ls_balae.add(bala_boss)
+    ls_todos.add(bala_boss)
+
+    bala_boss.restartMovements(boss.getPos())
+
+    pantalla.blit(fondo,[0,0])
+    ls_todos.draw(pantalla)
+    ls_boss.draw(pantalla)
+    ls_todos.update()
+    pygame.display.flip()
+    reloj.tick(60)
+
+    boss_s.stop()
+
+    pantalla_s.play()'''
 
     '''while(not terminar):
 
