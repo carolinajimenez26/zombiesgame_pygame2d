@@ -100,18 +100,21 @@ def level2(ANCHO,ALTO, level = 2):
         ls_boss.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(60)
+        reloj.tick(60)#Era 60
 
         if(boss.getPos() == middle):
-            reloj.tick(0.2)
+            reloj.tick(0.3)
             terminar = True #se sale de este ciclo cuando llegue a la mitad
+
     print "1"
 
-    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
+
+    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2,ANCHO,ALTO)
     ls_balae.add(bala_boss)
     ls_todos.add(bala_boss)
 
     bala_boss.restartMovements(boss.getPos())
+
 
     for i in range (0, len(bala_boss.moves)):
 
@@ -123,6 +126,7 @@ def level2(ANCHO,ALTO, level = 2):
         ls_todos.update()
         pygame.display.flip()
         reloj.tick(10)
+
 
     terminar = False
     print "2"
@@ -144,8 +148,11 @@ def level2(ANCHO,ALTO, level = 2):
         pygame.display.flip()
         reloj.tick(60)
 
+
     ls_balae.remove(bala_boss2)
     ls_todos.remove(bala_boss2)
+
+    ls_balae.remove(bala_boss)
 
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
@@ -175,7 +182,7 @@ def level2(ANCHO,ALTO, level = 2):
     terminar = False
     pantalla_s.play()
     flag = False
-
+    flagoleada=True
     while(not terminar):
 
         if(magician.getLife() <= 0): #vuelve al menu ppal
@@ -190,27 +197,30 @@ def level2(ANCHO,ALTO, level = 2):
           terminar=True
 
         if((len(ls_enemigos) == 0 ) and flag and not terminar):
-          pantalla_s.stop()
+          boss.setPos((100,100))
+          flagoleada=False
+          """pantalla_s.stop()
           reloj.tick(0.6)
           level+=1
           terminar=True
-          winner(ANCHO,ALTO)#ganaste
+          winner(ANCHO,ALTO)#ganaste"""
 
         #----------------ENEMIGOS-------------------------
-        if(len(ls_enemigos) == 0): #si ya los mato a todos
-          tipo2 = pygame.font.SysFont("comicsansms", 50)
-          texto_oleada = tipo2.render("READY? ",1, (255,255,255))
-          pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
-          pygame.display.flip()
-          reloj.tick(0.5)
-          pantalla.blit(fondo,[0,0])
-          texto_oleada = tipo2.render("GO! ",1, (255,255,255))
-          pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
-          pygame.display.flip()
-          reloj.tick(0.5)
-          oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
-          contador_vida = 0
-          flag = True
+        if(flagoleada):
+            if(len(ls_enemigos) == 0): #si ya los mato a todos
+              tipo2 = pygame.font.SysFont("comicsansms", 50)
+              texto_oleada = tipo2.render("READY? ",1, (255,255,255))
+              pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
+              pygame.display.flip()
+              reloj.tick(0.5)
+              pantalla.blit(fondo,[0,0])
+              texto_oleada = tipo2.render("GO! ",1, (255,255,255))
+              pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
+              pygame.display.flip()
+              reloj.tick(0.5)
+              oleadas(aux_oleada,ANCHO, ALTO, ls_enemigos, ls_todos,magician,level)
+              contador_vida = 0
+              flag = True
 
         events = pygame.event.get()
         #print "cont : " , contador_vida
@@ -322,21 +332,22 @@ def level2(ANCHO,ALTO, level = 2):
         if(cont >= 8):
             cont=0
 
-        print "hola1"
         #lista de balas
         for b in ls_balaj:
-            print "hola2"
-            ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
-            for impacto in ls_impactos:
-                print "hola3"
-                ls_balaj.remove(b)
-                ls_todos.remove(b)
-                magician.setScore(10)
-                print "enemigos (shutted): " , len(ls_enemigos)
+            for enemigo in ls_enemigos:
+                if(checkCollision(b,enemigo)):
+                    enemigo.setLife(enemigo.getLife()-random.randrange(15))
+                    ls_balaj.remove(b)
+                    ls_todos.remove(b)
+                    magician.setScore(5)
+
 
 
         for enemigo in ls_enemigos:
             enemigo.jugador = magician.getPos()
+            if(enemigo.getLife() <= 0):
+                ls_enemigos.remove(enemigo)
+                ls_todos.remove(enemigo)
 
         magician.mov=0
 
@@ -347,6 +358,8 @@ def level2(ANCHO,ALTO, level = 2):
                 ls_todos.remove(vida)
                 magician.setLife(magician.getLife()+10)
                 lifebars(magician,pantalla,[ANCHO/2,ALTO])#cambia la bara de vida
+
+
 
         pantalla.blit(fondo,[0,0])
         pantalla.blit(blood,[0,ALTO+15])
@@ -362,4 +375,4 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(tasa_cambio)
         contador_vida += 1
 
-    return True
+    return level

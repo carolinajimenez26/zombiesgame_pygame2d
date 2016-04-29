@@ -98,7 +98,7 @@ class Vampire(Enemy):
     def __init__(self, img_name,table,pos,w,h):
         Enemy.__init__(self, img_name,pos,w,h)
         self.table = table
-        self.life = 5
+        self.life = 40
         self.speed = 10
 
     def getLife(self):
@@ -153,8 +153,8 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.WIDTH = w
         self.HIGH = h
         #speed
-        self.increment_x = self.getRect()[2] / 5
-        self.increment_y = self.getRect()[3] / 5
+        self.increment_x = self.getRect()[2] / 10
+        self.increment_y = self.getRect()[3] / 10
 
     def getScore(self):
         return self.score
@@ -271,15 +271,17 @@ class Bullet(Weapon): #Hereda de la clase sprite
         if(self.magiciandir == 3):#abajo
             self.rect.y += self.speed
 
-class CircleBullet(Weapon):
-    def __init__(self, img_name, pos, r): #img para cargar, y su padre(de donde debe salir la bala)
+class CircleBullet(Weapon): #Primero va a la izquierda y despues va todo a la derecha
+    def __init__(self, img_name, pos, r,w,h): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
         self.r = r #radio de la circunferencia
         self.i = 0
         self.moves = [0 for x in range(16)] #movimientos que debe realizar
 
+
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = CircunfPtoMedio(self.getPos(),self.r)#carga los nuevos movimientos
+        self.order= sorted(self.moves, key=lambda tup: tup[1])
         self.i = 0 #debe empezar a recorrerla desde cero
 
     def update(self): #se mueve
@@ -292,6 +294,7 @@ class CircleBullet(Weapon):
         else :
             self.i = 0
 
+
 class RectBullet(Weapon):
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
@@ -301,7 +304,6 @@ class RectBullet(Weapon):
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = Bresenhamrecta([self.getPos(),pos])
         self.i = 0 #debe empezar a recorrerla desde cero
-
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
@@ -431,7 +433,6 @@ def plotpoint((x0,y0),(x,y),res):
     res.append((x0+x,y0-y))
     res.append((x0-x,y0-y))
     res.append((x0-y,y0-x))
-
 
 #Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
 
