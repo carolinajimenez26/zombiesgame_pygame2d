@@ -8,7 +8,7 @@ from level2 import *
 def game(ANCHO,ALTO):
 
     terminarp=False
-    level = 1
+    level = 2
 
     while(not terminarp):
 

@@ -121,9 +121,8 @@ def level2(ANCHO,ALTO, level = 2):
         ls_balae.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(20)
+        reloj.tick(100)
 
-    ls_balae.remove(bala_boss)
 
     terminar = False
     print "2"
@@ -144,6 +143,9 @@ def level2(ANCHO,ALTO, level = 2):
             terminar = True
 
     ls_balae.remove(bala_boss)
+    ls_todos.remove(bala_boss)
+    pantalla.blit(fondo,[0,0])
+    pygame.display.flip()
 
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
