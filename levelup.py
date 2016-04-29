@@ -24,4 +24,5 @@ def levelup(ANCHO,ALTO, level):
         pygame.display.flip()
         reloj.tick(0.2)
         terminar=True
+    
     return level

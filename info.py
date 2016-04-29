@@ -47,3 +47,4 @@ def info(ANCHO,ALTO):
 
         menu_d.blit(Salir,(0, ALTO - 50))
         pygame.display.flip()
+    
