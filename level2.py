@@ -100,21 +100,20 @@ def level2(ANCHO,ALTO, level = 2):
         ls_boss.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(60)
+        reloj.tick(60)#Era 60
 
         if(boss.getPos() == middle):
             reloj.tick(0.2)
             terminar = True #se sale de este ciclo cuando llegue a la mitad
-    """print "1"
 
-    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
+
+    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2,ANCHO,ALTO)
     ls_balae.add(bala_boss)
     ls_todos.add(bala_boss)
 
     bala_boss.restartMovements(boss.getPos())
 
-    while(cont_balas > 0):
-
+    for i in range(0,(len(bala_boss.moves))):
         bala_boss.update()
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
@@ -122,9 +121,7 @@ def level2(ANCHO,ALTO, level = 2):
         ls_balae.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(100)
-
-        cont_balas -= 1
+        reloj.tick(1000)
 
     ls_balae.remove(bala_boss)
 
@@ -147,7 +144,7 @@ def level2(ANCHO,ALTO, level = 2):
             terminar = True
 
     ls_balae.remove(bala_boss)
-    """
+
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
     boss.restartMovements(up)#se va hasta la mitad de la pantalla
@@ -321,21 +318,22 @@ def level2(ANCHO,ALTO, level = 2):
         if(cont >= 8):
             cont=0
 
-        print "hola1"
         #lista de balas
         for b in ls_balaj:
-            print "hola2"
-            ls_impactos = pygame.sprite.spritecollide(b, ls_enemigos, True)
-            for impacto in ls_impactos:
-                print "hola3"
-                ls_balaj.remove(b)
-                ls_todos.remove(b)
-                magician.setScore(10)
-                print "enemigos (shutted): " , len(ls_enemigos)
+            for enemigo in ls_enemigos:
+                if(checkCollision(b,enemigo)):
+                    enemigo.setLife(enemigo.getLife()-random.randrange(15))
+                    ls_balaj.remove(b)
+                    ls_todos.remove(b)
+                    magician.setScore(5)
+
 
 
         for enemigo in ls_enemigos:
             enemigo.jugador = magician.getPos()
+            if(enemigo.getLife() <= 0):
+                ls_enemigos.remove(enemigo)
+                ls_todos.remove(enemigo)
 
         magician.mov=0
 

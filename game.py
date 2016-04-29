@@ -1,5 +1,6 @@
 from loser import game_over
 from levelup import levelup
+from main import main
 from level1 import *
 from level2 import *
 
@@ -16,6 +17,3 @@ def game(ANCHO,ALTO):
 
         if(level==2):
             terminarp = level2(ANCHO,ALTO)
-
-        else:
-            sys.exit()

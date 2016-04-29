@@ -98,7 +98,7 @@ class Vampire(Enemy):
     def __init__(self, img_name,table,pos,w,h):
         Enemy.__init__(self, img_name,pos,w,h)
         self.table = table
-        self.life = 5
+        self.life = 40
         self.speed = 10
 
     def getLife(self):
@@ -271,28 +271,31 @@ class Bullet(Weapon): #Hereda de la clase sprite
         if(self.magiciandir == 3):#abajo
             self.rect.y += self.speed
 
-class CircleBullet(Weapon):
-    def __init__(self, img_name, pos, r): #img para cargar, y su padre(de donde debe salir la bala)
+class CircleBullet(Weapon): #Primero va a la izquierda y despues va todo a la derecha
+    def __init__(self, img_name, pos, r,w,h): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
         self.r = r #radio de la circunferencia
+        self.moves=[]
+        self.i=0
+        self.time=0
 
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = CircunfPtoMedio(self.getPos(),self.r)#carga los nuevos movimientos
+        #self.moves = sorted(self.moves, reverse=True)
         self.i = 0 #debe empezar a recorrerla desde cero
 
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
+            self.cont=1
 
 class RectBullet(Weapon):
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
-
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = Bresenhamrecta([self.getPos(),pos])
         self.i = 0 #debe empezar a recorrerla desde cero
-
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])

@@ -248,6 +248,7 @@ def level1(ANCHO,ALTO, level = 1):
         reloj.tick(tasa_cambio)
         contador_vida += 1
 
+
     return True
 
 #pantalla = pygame.display.set_mode([10,10])
