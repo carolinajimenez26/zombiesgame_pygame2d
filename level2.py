@@ -105,7 +105,7 @@ def level2(ANCHO,ALTO, level = 2):
         if(boss.getPos() == middle):
             reloj.tick(0.2)
             terminar = True #se sale de este ciclo cuando llegue a la mitad
-    """print "1"
+    print "1"
 
     bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2)
     ls_balae.add(bala_boss)
@@ -113,29 +113,29 @@ def level2(ANCHO,ALTO, level = 2):
 
     bala_boss.restartMovements(boss.getPos())
 
-    while(cont_balas > 0):
+    for i in range (0, len(bala_boss.moves)):
 
-        bala_boss.update()
+        #bala_boss.update()
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
         ls_boss.draw(pantalla)
         ls_balae.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(100)
-
-        cont_balas -= 1
-
-    ls_balae.remove(bala_boss)
+        reloj.tick(10)
 
     terminar = False
     print "2"
-    bala_boss = RectBullet('bala.png',boss.getPos())
-    bala_boss.restartMovements(magician.getPos())
+    bala_boss2 = RectBullet('bala.png',boss.getPos())
+    bala_boss2.restartMovements(magician.getPos())
 
-    while(not terminar):
+    ls_balae.add(bala_boss2)
+    ls_todos.add(bala_boss2)
+    ls_balae.remove(bala_boss)
+    ls_todos.remove(bala_boss)
 
-        bala_boss.update()
+    for i in range (0, len(bala_boss2.moves)):
+
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
         ls_boss.draw(pantalla)
@@ -143,11 +143,10 @@ def level2(ANCHO,ALTO, level = 2):
         ls_todos.update()
         pygame.display.flip()
         reloj.tick(60)
-        if(bala_boss.i == len(bala_boss.moves)):#si ya le llego la bala al magician
-            terminar = True
 
-    ls_balae.remove(bala_boss)
-    """
+    ls_balae.remove(bala_boss2)
+    ls_todos.remove(bala_boss2)
+
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
     boss.restartMovements(up)#se va hasta la mitad de la pantalla
@@ -165,7 +164,9 @@ def level2(ANCHO,ALTO, level = 2):
         if(boss.getPos() == up):
             reloj.tick(0.2)
             terminar = True
+            ls_todos.remove(bala_boss)
             reloj.tick(0.2)
+
 
     boss_s.stop()
 
