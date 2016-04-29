@@ -423,37 +423,72 @@ def Bresenhamrecta(p): #algoritmo para dibujar rectas
     return res
 
 
-#Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
-def plotpoint((x0,y0),(x,y),res):
-    res.append((x0-y,y0+x))
-    res.append((x0-x,y0+y))
-    res.append((x0+x,y0+y))
-    res.append((x0+y,y0+x))
-    res.append((x0+y,y0-x))
-    res.append((x0+x,y0-y))
-    res.append((x0-x,y0-y))
-    res.append((x0-y,y0-x))
+def tras((x0,y0),(x,y)):
+    x=x0+x
+    y=y0-y
+    return (x,y)
 
-#Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
-
-#Algoritmo de Bresenham para la circunferencia
 def CircunfPtoMedio((x0,y0),r):
-    x=0
-    y=r
-    p=1-r
-    res=[]
-    plotpoint((x0,y0),(x,y),res)
-    while(x<y):
-        x=x+1
-        if(p<0):
-            p=p+2*x+1
-        else:
-            y=y-1
-            p=p+2*(x-y)+1
-    plotpoint((x0,y0),(x,y),res)
-    return res
-#fin Algoritmo de Bresenham para la circunferencia
+	l=[]
+	l2=[]
+	l3=[]
+	l4=[]
+	l5=[]
+	l6=[]
+	l7=[]
+	l8=[]
+	x=0
+	y=r
+	d=5/4-r
+	punto=tras((x0,y0),(x,y)) #X0+X Y0-Y
+	l.append(punto)
+	punto=tras((x0,y0),(x,-y))#X0+X Y0+Y
+	l2.append(punto)
+	punto=tras((x0,y0),(-x,y))#X0-X Y0-Y
+	l3.append(punto)
+	punto=tras((x0,y0),(-x,-y))#X0-X Y0+Y
+	l4.append(punto)
+	punto=tras((x0,y0),(y,x)) #X0+Y Y0-X
+	l5.append(punto)
+	punto=tras((x0,y0),(y,-x))#X0+Y Y0+X
+	l6.append(punto)
+	punto=tras((x0,y0),(-y,x))#X0-Y Y0-X
+	l7.append(punto)
+	punto=tras((x0,y0),(-y,-x))#X0-Y Y0+X
+	l8.append(punto)
+	#simetria(pantalla,(x0,y0),(x,y))
 
+	while y>x:
+		if d<0:
+			d=d+x*2+3
+			x=x+1
+		else:
+			d=d+2*(x-y)+5
+			x=x+1
+			y=y-1
+		#simetria(pantalla,(x0,y0),(x,y))
+		punto=tras((x0,y0),(x,y))
+		l.append(punto)
+		punto=tras((x0,y0),(x,-y))
+		l2.append(punto)
+		punto=tras((x0,y0),(-x,y))
+		l3.append(punto)
+		punto=tras((x0,y0),(-x,-y))
+		l4.append(punto)
+		punto=tras((x0,y0),(y,x))
+		l5.append(punto)
+		punto=tras((x0,y0),(y,-x))
+		l6.append(punto)
+		punto=tras((x0,y0),(-y,x))
+		l7.append(punto)
+		punto=tras((x0,y0),(-y,-x))
+		l8.append(punto)
+	l5.reverse()
+	l2.reverse()
+	l8.reverse()
+	l3.reverse()
+	res = l+l5+l6+l2+l4+l8+l7+l3
+	return res
 
 #Carga los sonidos verificando la ruta
 def load_sound(nombre_s,dir_son):

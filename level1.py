@@ -83,6 +83,7 @@ def level1(ANCHO,ALTO, level = 1):
           reloj.tick(0.3)
           game_over(ANCHO,ALTO)
           terminar=True
+          return 3
 
         if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
           pantalla_s.stop()

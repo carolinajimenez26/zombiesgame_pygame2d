@@ -108,7 +108,6 @@ def level2(ANCHO,ALTO, level = 2):
 
     print "1"
 
-
     bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2,ANCHO,ALTO)
     ls_balae.add(bala_boss)
     ls_todos.add(bala_boss)
@@ -125,7 +124,7 @@ def level2(ANCHO,ALTO, level = 2):
         ls_balae.draw(pantalla)
         ls_todos.update()
         pygame.display.flip()
-        reloj.tick(10)
+        reloj.tick(100)
 
 
     terminar = False
@@ -169,13 +168,14 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(60)
 
         if(boss.getPos() == up):
-            reloj.tick(0.2)
             terminar = True
             ls_todos.remove(bala_boss)
-            reloj.tick(0.2)
+            reloj.tick(0.3)
 
 
     boss_s.stop()
+    magician.setLife(80)#porque el boss le pego
+    print "life : " , magician.getLife()
 
     print "end"
 
@@ -195,15 +195,16 @@ def level2(ANCHO,ALTO, level = 2):
           reloj.tick(0.3)
           game_over(ANCHO,ALTO)
           terminar=True
+          return 3 #level3
 
         if((len(ls_enemigos) == 0 ) and flag and not terminar):
           boss.setPos((100,100))
           flagoleada=False
-          """pantalla_s.stop()
+          pantalla_s.stop()
           reloj.tick(0.6)
           level+=1
           terminar=True
-          winner(ANCHO,ALTO)#ganaste"""
+          winner(ANCHO,ALTO)#ganaste
 
         #----------------ENEMIGOS-------------------------
         if(flagoleada):
