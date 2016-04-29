@@ -33,7 +33,7 @@ def level2(ANCHO,ALTO, level = 2):
 
     #-----------------magician------------------------------------------------
     magician = Magician('dere_1.png',[0,0], ANCHO, ALTO)
-    bottom = [(ANCHO / 2) - (magician.getRect()[2] / 2), ALTO - (magician.getRect()[3] / 2)]
+    bottom = [(ANCHO / 2) - (magician.getRect()[2] / 2), ALTO - (magician.getRect()[3] / 2 + 50)]
     magician.setPos(bottom) #posiciona el magician en la mitad de la pantalla
 
     #Agrega las imagenes del magician
@@ -52,7 +52,7 @@ def level2(ANCHO,ALTO, level = 2):
     #------------------BOSS-------------------------------------
     #Creamos el jefe 26 x 33 or 32 x 48
     table = cargar_fondo(curdir + "/images/" + 'boss.png', 13, 28) #ARREGLAR
-    boss = Boss('boss.png',table,[0,0],ANCHO, ALTO - 50)
+    boss = Boss('boss_ini.png',table,[0,0],ANCHO, ALTO - 50)
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), 0]
     boss.setPos(up)
     ls_todos.add(boss)
@@ -62,7 +62,7 @@ def level2(ANCHO,ALTO, level = 2):
     #------------------------PANTALLA--------------------------
     fondo = load_image('fondo2.jpg',curdir, alpha=False)
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
-    pantalla.fill(blanco)
+    pantalla.fill(negro)
 
     pantalla.blit(fondo,posinif)
     splash = False
@@ -202,6 +202,7 @@ def level2(ANCHO,ALTO, level = 2):
           pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
           pygame.display.flip()
           reloj.tick(0.5)
+          pantalla.blit(fondo,[0,0])
           texto_oleada = tipo2.render("GO! ",1, (255,255,255))
           pantalla.blit(texto_oleada,(ANCHO/2 - 100,ALTO/2 - 30))
           pygame.display.flip()
