@@ -3,7 +3,7 @@ from func import *
 def levelup(ANCHO,ALTO, level):
     #Inicializacion de pantalla
     pygame.init()
-    levelup_d = pygame.display.set_mode((ANCHO, ALTO+50))#, pygame.FULLSCREEN)
+    levelup_d = pygame.display.set_mode((ANCHO, ALTO+50), pygame.FULLSCREEN)
     pygame.display.set_caption("Magician-zombie v0.1 - Level UP ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 25)
     levelup_d.fill((0,0,0))

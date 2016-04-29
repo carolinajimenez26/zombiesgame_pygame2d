@@ -70,9 +70,8 @@ class Enemy(pygame.sprite.Sprite): #Hereda de la clase sprite
         return (self.rect[2],self.rect[3])
 
 class Boss(Enemy):
-    def __init__(self, img_name,table,pos,w,h):
+    def __init__(self, img_name,pos,w,h):
         Enemy.__init__(self, img_name,pos,w,h)
-        self.table = table
         self.life = 1000
         self.speed = 5
 
@@ -93,6 +92,7 @@ class Boss(Enemy):
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
+
 
 class Vampire(Enemy):
     def __init__(self, img_name,table,pos,w,h):
@@ -275,10 +275,9 @@ class CircleBullet(Weapon): #Primero va a la izquierda y despues va todo a la de
     def __init__(self, img_name, pos, r,w,h): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
         self.r = r #radio de la circunferencia
-        self.moves=[]
-        self.order=[]
-        self.i=0
-        self.time=0
+        self.i = 0
+        self.moves = [0 for x in range(16)] #movimientos que debe realizar
+
 
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = CircunfPtoMedio(self.getPos(),self.r)#carga los nuevos movimientos
@@ -286,21 +285,32 @@ class CircleBullet(Weapon): #Primero va a la izquierda y despues va todo a la de
         self.i = 0 #debe empezar a recorrerla desde cero
 
     def update(self): #se mueve
+
         if(self.i < len(self.moves)):
+            #print "self.moves_copy[self.i] : " , self.moves[self.i]
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
+            #print "i : " , self.i
+        else :
+            self.i = 0
 
 
 class RectBullet(Weapon):
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
     	Weapon.__init__(self, img_name, pos)
+        self.i = 0
+        self.moves = [] #movimientos que debe realizar
+
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = Bresenhamrecta([self.getPos(),pos])
         self.i = 0 #debe empezar a recorrerla desde cero
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
+            print "setPos : " , self.moves[self.i]
             self.i += 1 #para que recorra el siguiente
+        else :
+            self.i = 0
 
 
 def oleadas(oleada, ANCHO, ALTO, ls_enemigos, ls_todos,jugador,nivel):
@@ -411,65 +421,6 @@ def Bresenhamrecta(p): #algoritmo para dibujar rectas
             p_new = [x, y]
             res.append(p_new)
     return res
-
-
-#Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
-"""def plotpoint((x0,y0),(x,y),res):
-    res.append((x0-y,y0+x))
-    res.append((x0-x,y0+y))
-    res.append((x0+x,y0+y))
-    res.append((x0+y,y0+x))
-    res.append((x0+y,y0-x))
-    res.append((x0+x,y0-y))
-    res.append((x0-x,y0-y))
-    res.append((x0-y,y0-x))
-
-def plotpoint((x0,y0),(x,y),res):
-    l=[]
-    l2=[]
-    l3=[]
-    l4=[]
-    l5=[]
-    l6=[]
-    l7=[]
-    l8=[]
-    punto=(x0+x,y0-y)
-    l.append(punto)
-    punto=reversed(x0+x,y0+y)
-    l2.append(punto)
-    punto=reversed(x0-x,y0-y)
-    l3.append(punto)
-    punto=(x0-x,y0+y)
-    l4.append(punto)
-    punto=reversed(x0+y,y0-x)
-    l5.append(punto)
-    punto=(x0+y,y0+x)
-    l6.append(punto)
-    punto=(x0-y,y0-x)
-    l7.append(punto)
-    punto=reversed(x0-y,y0+x)
-    l8.append(punto)
-    ltotal = l+l5+l6+l2+l4+l8+l7+l3
-    res.append(ltotal)
-#Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
-
-#Algoritmo de Bresenham para la circunferencia
-def CircunfPtoMedio((x0,y0),r):
-    x=0
-    y=r
-    p=1-r
-    res=[]
-    plotpoint((x0,y0),(x,y),res)
-    while(x<y):
-        x=x+1
-        if(p<0):
-            p=p+2*x+1
-        else:
-            y=y-1
-            p=p+2*(x-y)+1
-    plotpoint((x0,y0),(x,y),res)
-    return res
-#fin Algoritmo de Bresenham para la circunferencia"""
 
 def tras((x0,y0),(x,y)):
     x=x0+x

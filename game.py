@@ -14,6 +14,8 @@ def game(ANCHO,ALTO):
 
         if(level==1):
             level = level1(ANCHO,ALTO)
+            if(level>=3):
+                terminarp=True
 
         if(level==2):
             level = level2(ANCHO,ALTO)

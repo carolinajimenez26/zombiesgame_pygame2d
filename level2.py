@@ -9,7 +9,7 @@ def level2(ANCHO,ALTO, level = 2):
 
     #Inicializacion de pantalla
     pygame.init()
-    pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
+    pantalla = pygame.display.set_mode((ANCHO, ALTO+50))#, pygame.FULLSCREEN)
     pygame.display.set_caption("Magician-zombie v0.1 - Level 2 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
     pantalla_s=load_sound('background.ogg',curdir)
@@ -51,8 +51,8 @@ def level2(ANCHO,ALTO, level = 2):
 
     #------------------BOSS-------------------------------------
     #Creamos el jefe 26 x 33 or 32 x 48
-    table = cargar_fondo(curdir + "/images/" + 'boss.png', 13, 28) #ARREGLAR
-    boss = Boss('boss_ini.png',table,[0,0],ANCHO, ALTO - 50)
+    table=0
+    boss = Boss('boss_ini.png',[0,0],ANCHO, ALTO - 50)
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), 0]
     boss.setPos(up)
     ls_todos.add(boss)
@@ -87,12 +87,14 @@ def level2(ANCHO,ALTO, level = 2):
 
     #--------------------APARICION INICIAL DEL BOSS---------------
     boss_s.play()
+    ambiente_s=load_sound('ambiente.ogg',curdir)
+    ambiente_s.play()
+
 
     cont_balas = 60
     terminar = False
     middle = [(ANCHO / 2) - (boss.getRect()[2] / 2), (ALTO / 2) - (boss.getRect()[3] / 2)]
     boss.restartMovements(middle)#se va hasta la mitad de la pantalla
-    print "0"
     while(not terminar):
 
         pantalla.blit(fondo,[0,0])
@@ -103,17 +105,18 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(60)#Era 60
 
         if(boss.getPos() == middle):
-            reloj.tick(0.2)
+            reloj.tick(0.3)
             terminar = True #se sale de este ciclo cuando llegue a la mitad
 
 
-    bala_boss = CircleBullet('bala.png',boss.getPos(),boss.getMargen()[0] + boss.getMargen()[0]/2,ANCHO,ALTO)
+    bala_boss = CircleBullet('bala_b.png',boss.getPos(), boss.getMargen()[0] + boss.getMargen()[0]/2,ANCHO,ALTO)
     ls_balae.add(bala_boss)
     ls_todos.add(bala_boss)
 
     bala_boss.restartMovements(boss.getPos())
 
-    for i in range(0,(len(bala_boss.moves))):
+
+    for i in range (0, len(bala_boss.moves)):
         #bala_boss.update()
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
@@ -125,13 +128,16 @@ def level2(ANCHO,ALTO, level = 2):
 
 
     terminar = False
-    print "2"
-    bala_boss = RectBullet('bala.png',boss.getPos())
-    bala_boss.restartMovements(magician.getPos())
+    bala_boss2 = RectBullet('bala_b.png',boss.getPos())
+    bala_boss2.restartMovements(magician.getPos())
 
-    while(not terminar):
+    ls_balae.add(bala_boss2)
+    ls_todos.add(bala_boss2)
+    ls_balae.remove(bala_boss)
+    ls_todos.remove(bala_boss)
 
-        bala_boss.update()
+    for i in range (0, len(bala_boss2.moves)):
+
         pantalla.blit(fondo,[0,0])
         ls_todos.draw(pantalla)
         ls_boss.draw(pantalla)
@@ -139,19 +145,28 @@ def level2(ANCHO,ALTO, level = 2):
         ls_todos.update()
         pygame.display.flip()
         reloj.tick(60)
-        if(bala_boss.i == len(bala_boss.moves)):#si ya le llego la bala al magician
-            terminar = True
+
+    risa_s=load_sound('lau.ogg',curdir)
+    impact_s=load_sound('impact.flac',curdir)
+
+    impact_s.play()
+
+
+
+    ls_balae.remove(bala_boss2)
+    ls_todos.remove(bala_boss2)
 
     ls_balae.remove(bala_boss)
     ls_todos.remove(bala_boss)
     pantalla.blit(fondo,[0,0])
     pygame.display.flip()
 
+
     terminar = False
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
     boss.restartMovements(up)#se va hasta la mitad de la pantalla
 
-    print "3"
+    risa_s.play()
     while(not terminar): #se va
 
         pantalla.blit(fondo,[0,0])
@@ -162,18 +177,21 @@ def level2(ANCHO,ALTO, level = 2):
         reloj.tick(60)
 
         if(boss.getPos() == up):
-            reloj.tick(0.2)
             terminar = True
-            reloj.tick(0.2)
+            ls_todos.remove(bala_boss)
+            reloj.tick(0.3)
+
 
     boss_s.stop()
+    magician.setLife(magician.getLife()-30)#porque el boss le pego
 
-    print "end"
 
     terminar = False
     pantalla_s.play()
     flag = False
     flagoleada=True
+    ls_todos.remove(boss)
+    boss.restartMovements(magician.getPos())
     while(not terminar):
 
         if(magician.getLife() <= 0): #vuelve al menu ppal
@@ -186,15 +204,23 @@ def level2(ANCHO,ALTO, level = 2):
           reloj.tick(0.3)
           game_over(ANCHO,ALTO)
           terminar=True
+          return 3 #level3
 
         if((len(ls_enemigos) == 0 ) and flag and not terminar):
-          boss.setPos((100,100))
           flagoleada=False
-          """pantalla_s.stop()
+          pantalla_s.stop()
           reloj.tick(0.6)
           level+=1
           terminar=True
-          winner(ANCHO,ALTO)#ganaste"""
+          winner(ANCHO,ALTO)
+
+
+        """if(boss.getLife() <= 0):
+            pantalla_s.stop()
+            reloj.tick(0.6)
+            level+=1
+            terminar=True
+            winner(ANCHO,ALTO)"""
 
         #----------------ENEMIGOS-------------------------
         if(flagoleada):
@@ -247,6 +273,7 @@ def level2(ANCHO,ALTO, level = 2):
             if event.type  == pygame.QUIT:
               pantalla_s.stop()
               terminar = True
+              level=3
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -267,6 +294,12 @@ def level2(ANCHO,ALTO, level = 2):
                     ls_balaj.add(bala)
                     ls_todos.add(bala)
                     disparo = True
+
+                if event.key == pygame.K_ESCAPE:
+                    pantalla_s.stop()
+                    terminar=True
+                    level=3
+
 
 
         if keys[pygame.K_a]:
@@ -305,9 +338,10 @@ def level2(ANCHO,ALTO, level = 2):
             for e in ls_enemigos:
                 e.restartMovements(magician.getPos())
 
-        if keys[pygame.K_ESCAPE]:
-          pantalla_s.stop()
-          terminar = True
+            for b in ls_boss:
+                b.restartMovements(magician.getPos())
+            boss.restartMovements(magician.getPos())
+
 
         magician.enemigos=len(ls_enemigos)
 
@@ -331,6 +365,15 @@ def level2(ANCHO,ALTO, level = 2):
                     ls_balaj.remove(b)
                     ls_todos.remove(b)
                     magician.setScore(5)
+
+        for b in ls_balaj:
+            for bossesito in ls_boss:
+                if(checkCollision(b,bossesito)):
+                    bossesito.setLife(bossesito.getLife()-random.randrange(15))
+                    ls_balaj.remove(b)
+                    ls_todos.remove(b)
+                    impact_s.play()
+                    magician.setScore(15)
 
 
 
@@ -358,8 +401,10 @@ def level2(ANCHO,ALTO, level = 2):
         pantalla.blit(reloj2, [500,ALTO+15])
         lifebars(magician,pantalla,[120,ALTO+18])
         ls_todos.draw(pantalla)
+        ls_boss.draw(pantalla)
         ls_enemigos.draw(pantalla)
         ls_todos.update()
+
         pygame.display.flip()
 
         con_cuadros+=1

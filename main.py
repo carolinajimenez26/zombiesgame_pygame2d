@@ -76,7 +76,7 @@ def main():
                         sys.exit()
 
             menu_d.blit(backgroundm,(0,0))
-            menu_d.blit(text_sup, (ANCHO/2-180, 30))
+            menu_d.blit(text_sup, (ANCHO/2-200, 60))
             menu_d.blit(ad1, (ANCHO/2-50, ALTO/2))
             menu_d.blit(ad2, (ANCHO/2-50, (ALTO/2)+50))
             menu_d.blit(ad3, (ANCHO/2-50, (ALTO/2)+100))

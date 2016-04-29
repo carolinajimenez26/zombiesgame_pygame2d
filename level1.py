@@ -8,7 +8,7 @@ def level1(ANCHO,ALTO, level = 1):
 
     #Inicializacion de pantalla
     pygame.init()
-    pantalla = pygame.display.set_mode([ANCHO,ALTO + 50])
+    pantalla = pygame.display.set_mode((ANCHO, ALTO+50))#, pygame.FULLSCREEN)
     pygame.display.set_caption("Magician-zombie v0.1 - Level 1 ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 15)
     pantalla_s=load_sound('background.ogg',curdir)
@@ -83,6 +83,7 @@ def level1(ANCHO,ALTO, level = 1):
           reloj.tick(0.3)
           game_over(ANCHO,ALTO)
           terminar=True
+          return 3
 
         if((len(ls_enemigos) == 0 ) and (aux_oleada == 4)):
           pantalla_s.stop()
@@ -137,6 +138,7 @@ def level1(ANCHO,ALTO, level = 1):
             if event.type  == pygame.QUIT:
               pantalla_s.stop()
               terminar = True
+              level=3
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -198,6 +200,7 @@ def level1(ANCHO,ALTO, level = 1):
         if keys[pygame.K_ESCAPE]:
           pantalla_s.stop()
           terminar = True
+          level=3
 
         magician.enemigos=len(ls_enemigos)
 
