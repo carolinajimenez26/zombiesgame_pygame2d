@@ -153,8 +153,8 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.WIDTH = w
         self.HIGH = h
         #speed
-        self.increment_x = self.getRect()[2] / 5
-        self.increment_y = self.getRect()[3] / 5
+        self.increment_x = self.getRect()[2] / 10
+        self.increment_y = self.getRect()[3] / 10
 
     def getScore(self):
         return self.score
@@ -276,19 +276,20 @@ class CircleBullet(Weapon): #Primero va a la izquierda y despues va todo a la de
     	Weapon.__init__(self, img_name, pos)
         self.r = r #radio de la circunferencia
         self.moves=[]
+        self.order=[]
         self.i=0
         self.time=0
 
     def restartMovements(self,pos):#calcula el camino por donde debe moverse (recibe el punto final)
         self.moves = CircunfPtoMedio(self.getPos(),self.r)#carga los nuevos movimientos
-        #self.moves = sorted(self.moves, reverse=True)
+        self.order= sorted(self.moves, key=lambda tup: tup[1])
         self.i = 0 #debe empezar a recorrerla desde cero
 
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
             self.i += 1 #para que recorra el siguiente
-            self.cont=1
+
 
 class RectBullet(Weapon):
     def __init__(self, img_name, pos): #img para cargar, y su padre(de donde debe salir la bala)
@@ -413,6 +414,15 @@ def Bresenhamrecta(p): #algoritmo para dibujar rectas
 
 
 #Dibuja los 8 octantes para el Algoritmo de Bresenham para la circunferencia
+"""def plotpoint((x0,y0),(x,y),res):
+    res.append((x0-y,y0+x))
+    res.append((x0-x,y0+y))
+    res.append((x0+x,y0+y))
+    res.append((x0+y,y0+x))
+    res.append((x0+y,y0-x))
+    res.append((x0+x,y0-y))
+    res.append((x0-x,y0-y))
+    res.append((x0-y,y0-x))"""
 def plotpoint((x0,y0),(x,y),res):
     res.append((x0-y,y0+x))
     res.append((x0-x,y0+y))
@@ -422,7 +432,6 @@ def plotpoint((x0,y0),(x,y),res):
     res.append((x0+x,y0-y))
     res.append((x0-x,y0-y))
     res.append((x0-y,y0-x))
-
 #Fin dibuja 8 octantes Algoritmo de Bresenham para la circunferencia
 
 #Algoritmo de Bresenham para la circunferencia

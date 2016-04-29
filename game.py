@@ -8,12 +8,14 @@ from level2 import *
 def game(ANCHO,ALTO):
 
     terminarp=False
-    level = 2
+    level = 1
 
     while(not terminarp):
 
         if(level==1):
-            terminarp = level1(ANCHO,ALTO)
+            level = level1(ANCHO,ALTO)
 
         if(level==2):
-            terminarp = level2(ANCHO,ALTO)
+            level = level2(ANCHO,ALTO)
+            if(level>=3):
+                terminarp=True
