@@ -81,7 +81,7 @@ def main():
             menu_d.blit(ad2, (ANCHO/2-50, (ALTO/2)+50))
             menu_d.blit(ad3, (ANCHO/2-50, (ALTO/2)+100))
             pygame.display.flip()
-
+        pygame.display.quit()
 
 if __name__ == "__main__":
     main()
