@@ -4,11 +4,11 @@ def game_over(ANCHO,ALTO):
 
     #Inicializacion de pantalla
     pygame.init()
-    gameover_d = pygame.display.set_mode((ANCHO, ALTO+50), pygame.FULLSCREEN)
+    gameover_d = pygame.display.set_mode((ANCHO, ALTO+50))#, pygame.FULLSCREEN)
     pygame.display.set_caption("Magician-zombie v0.1 - Game over ", 'Spine Runtime')
     tipo = pygame.font.SysFont("monospace", 25)
     gameover_d.fill((0,255,0))
-    #Fin de inicializacion de pantalla
+    #Fin de inicializacion de pantallaw
     #Cargando imagenes
     posinif = [0,0]
     gameo = cargar_fondo(curdir + "/images/gameover.png", 355, 355)

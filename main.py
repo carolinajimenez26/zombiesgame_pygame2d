@@ -7,7 +7,7 @@ def main():
         ANCHO = 800
         ALTO = 600
         pygame.init()
-        menu_d = pygame.display.set_mode((ANCHO, ALTO), pygame.FULLSCREEN)
+        menu_d = pygame.display.set_mode((ANCHO, ALTO))#, pygame.FULLSCREEN)
         backgroundm = load_image('backgroundm.jpg',curdir,alpha=False)
         ad1 = load_image('btn1.png', curdir, alpha=False)
         ad2 = load_image('btn3.png', curdir, alpha=False)

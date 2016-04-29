@@ -252,7 +252,7 @@ def level1(ANCHO,ALTO, level = 1):
         contador_vida += 1
 
 
-    return level
+    return level,magician.getLife()
 
 #pantalla = pygame.display.set_mode([10,10])
 #pygame.display.flip()

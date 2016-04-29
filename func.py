@@ -153,8 +153,8 @@ class Player(pygame.sprite.Sprite): #Hereda de la clase sprite
         self.WIDTH = w
         self.HIGH = h
         #speed
-        self.increment_x = self.getRect()[2] / 10
-        self.increment_y = self.getRect()[3] / 10
+        self.increment_x = self.getRect()[2] / 15
+        self.increment_y = self.getRect()[3] / 15
 
     def getScore(self):
         return self.score
@@ -307,7 +307,6 @@ class RectBullet(Weapon):
     def update(self): #se mueve
         if(self.i < len(self.moves)):
             self.setPos(self.moves[self.i])
-            print "setPos : " , self.moves[self.i]
             self.i += 1 #para que recorra el siguiente
         else :
             self.i = 0

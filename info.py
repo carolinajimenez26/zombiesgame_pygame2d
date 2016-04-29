@@ -2,7 +2,7 @@ from func import *
 def info(ANCHO,ALTO):
 
     pygame.init()
-    menu_d = pygame.display.set_mode((ANCHO, ALTO), pygame.FULLSCREEN)
+    menu_d = pygame.display.set_mode((ANCHO, ALTO))#, pygame.FULLSCREEN)
     backgroundm = load_image('backgroundm.jpg',curdir,alpha=False)
     terminar = False
     tipo = pygame.font.SysFont("comicsansms", 30)

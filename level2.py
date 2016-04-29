@@ -2,7 +2,7 @@ from func import *
 from loser import game_over
 from winner import *
 
-def level2(ANCHO,ALTO, level = 2):
+def level2(ANCHO,ALTO, vidalifemago, level = 2):
 
     aux_oleada = 1 #para que sepa que oleada va a mandar
     contador_vida = 0 #Para saber cuando mandar vidas
@@ -45,7 +45,7 @@ def level2(ANCHO,ALTO, level = 2):
     magician.imagei.append(load_image('iz_2.png',curdir,alpha=True))
     magician.imagena.append(load_image('ab_1.png',curdir,alpha=True))
     magician.imagena.append(load_image('ab_2.png',curdir,alpha=True))
-
+    magician.setLife(vidalifemago)
     ls_todos.add(magician)
     ls_jugadores.add(magician)
 
@@ -63,7 +63,8 @@ def level2(ANCHO,ALTO, level = 2):
     fondo = load_image('fondo2.jpg',curdir, alpha=False)
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO+10))
     pantalla.fill(negro)
-
+    ambiente_s=load_sound('ambiente.ogg',curdir)
+    ambiente_s.play()
     pantalla.blit(fondo,posinif)
     splash = False
     ls_todos.draw(pantalla)
@@ -87,8 +88,7 @@ def level2(ANCHO,ALTO, level = 2):
 
     #--------------------APARICION INICIAL DEL BOSS---------------
     boss_s.play()
-    ambiente_s=load_sound('ambiente.ogg',curdir)
-    ambiente_s.play()
+
 
 
     cont_balas = 60
@@ -166,7 +166,7 @@ def level2(ANCHO,ALTO, level = 2):
     up = [(ANCHO / 2) - (boss.getRect()[2] / 2), -1*boss.getRect()[3]]
     boss.restartMovements(up)#se va hasta la mitad de la pantalla
 
-    risa_s.play()
+
     while(not terminar): #se va
 
         pantalla.blit(fondo,[0,0])
@@ -176,10 +176,13 @@ def level2(ANCHO,ALTO, level = 2):
         pygame.display.flip()
         reloj.tick(60)
 
+        if(boss.getPos()[1]<= 100):
+            risa_s.play()
         if(boss.getPos() == up):
             terminar = True
             ls_todos.remove(bala_boss)
             reloj.tick(0.3)
+
 
 
     boss_s.stop()
@@ -192,6 +195,7 @@ def level2(ANCHO,ALTO, level = 2):
     flagoleada=True
     ls_todos.remove(boss)
     boss.restartMovements(magician.getPos())
+
     while(not terminar):
 
         if(magician.getLife() <= 0): #vuelve al menu ppal
