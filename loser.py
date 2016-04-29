@@ -1,5 +1,5 @@
 from func import *
-
+from main import main
 def game_over(ANCHO,ALTO):
 
     #Inicializacion de pantalla
@@ -32,6 +32,7 @@ def game_over(ANCHO,ALTO):
                 if event.key == pygame.K_r:
                     #pygame.display.quit()
                     terminar=True
+
 
 
         if(tiempo==0):
